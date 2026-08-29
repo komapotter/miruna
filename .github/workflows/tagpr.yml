@@ -46,9 +46,10 @@ jobs:
 
       - run: flutter pub get
       - run: flutter build apk --debug
+      - run: mv build/app/outputs/flutter-apk/app-debug.apk "build/app/outputs/flutter-apk/${{ needs.tagpr.outputs.tag }}.apk"
 
       - uses: softprops/action-gh-release@3d0d9888cb7fd7b750713d6e236d1fcb99157228 # v3.0.2
         with:
           tag_name: ${{ needs.tagpr.outputs.tag }}
-          files: build/app/outputs/flutter-apk/app-debug.apk
+          files: build/app/outputs/flutter-apk/${{ needs.tagpr.outputs.tag }}.apk
           fail_on_unmatched_files: true
