@@ -44,7 +44,7 @@ class _AddAppScreenState extends ConsumerState<AddAppScreen> {
               controller: _query,
               decoration: const InputDecoration(
                 prefixIcon: Icon(Icons.search),
-                hintText: 'アプリ名で検索',
+                hintText: 'アプリ名やパッケージ名で検索',
                 border: OutlineInputBorder(),
               ),
               onChanged: (_) => setState(() {}),
@@ -64,7 +64,9 @@ class _AddAppScreenState extends ConsumerState<AddAppScreen> {
                 final apps = (result.data ?? const <InstalledApp>[])
                     .where(
                       (app) =>
-                          q.isEmpty || app.label.toLowerCase().contains(q),
+                          q.isEmpty ||
+                          app.label.toLowerCase().contains(q) ||
+                          app.packageName.toLowerCase().contains(q),
                     )
                     .toList();
                 if (apps.isEmpty) {
