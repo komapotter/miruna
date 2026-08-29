@@ -1,0 +1,6 @@
+[tagpr]
+	releaseBranch = main
+	versionFile = pubspec.yaml
+	calendarVersioning = true
+	changelog = true
+	release = true

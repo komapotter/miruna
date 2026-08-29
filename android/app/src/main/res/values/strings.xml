@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="accessibility_service_description">対象アプリの起動と終了を検知し、警告期間内の再起動を確認するために使います。画面の内容は読み取りません。</string>
+    <string name="monitor_channel_name">アプリ監視</string>
+    <string name="monitor_channel_description">対象アプリの再起動を監視しているときに表示します。</string>
+    <string name="monitor_notification_title">ミルナが監視中</string>
+    <string name="monitor_notification_text">対象アプリの再起動を確認しています</string>
+</resources>
