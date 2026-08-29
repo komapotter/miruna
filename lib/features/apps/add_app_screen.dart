@@ -44,7 +44,7 @@ class _AddAppScreenState extends ConsumerState<AddAppScreen> {
               controller: _query,
               decoration: const InputDecoration(
                 prefixIcon: Icon(Icons.search),
-                hintText: 'アプリ名やパッケージ名で検索',
+                hintText: 'アプリ名で検索',
                 border: OutlineInputBorder(),
               ),
               onChanged: (_) => setState(() {}),
@@ -80,7 +80,6 @@ class _AddAppScreenState extends ConsumerState<AddAppScreen> {
                     return ListTile(
                       leading: AppIconImage(bytes: app.iconBytes),
                       title: Text(app.label),
-                      subtitle: Text(app.packageName),
                       trailing: already ? const Text('追加済み') : const Icon(Icons.add),
                       onTap: already
                           ? null
