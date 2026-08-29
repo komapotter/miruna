@@ -4,3 +4,4 @@
 	calendarVersioning = true
 	changelog = true
 	release = true
+	vPrefix = true
