@@ -1,21 +1,19 @@
 name: ci
 
 on:
-  push:
-    branches: ["feature/**", "fix/**"]
   pull_request:
+    types: [opened, synchronize, reopened]
 
 permissions:
   contents: read
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
 jobs:
   ci:
     if: >
-      github.event_name == 'push' ||
       startsWith(github.head_ref, 'feature/') ||
       startsWith(github.head_ref, 'fix/')
     runs-on: ubuntu-latest
