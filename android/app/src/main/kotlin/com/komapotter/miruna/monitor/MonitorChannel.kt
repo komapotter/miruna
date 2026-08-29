@@ -43,12 +43,22 @@ class MonitorChannel(
                 }
                 "listInstalledApps" -> {
                     thread {
-                        val apps = InstalledApps.list(activity)
-                        mainHandler.post {
-                            try {
-                                result.success(apps)
-                            } catch (_: Exception) {
-                                // Channel already closed.
+                        try {
+                            val apps = InstalledApps.list(activity)
+                            mainHandler.post {
+                                try {
+                                    result.success(apps)
+                                } catch (_: Exception) {
+                                    // Channel already closed.
+                                }
+                            }
+                        } catch (error: Exception) {
+                            mainHandler.post {
+                                try {
+                                    result.error("monitor_error", error.message, null)
+                                } catch (_: Exception) {
+                                    // Channel already closed.
+                                }
                             }
                         }
                     }

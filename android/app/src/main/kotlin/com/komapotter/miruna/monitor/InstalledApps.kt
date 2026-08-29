@@ -3,17 +3,19 @@ package com.komapotter.miruna.monitor
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.pm.ResolveInfo
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.os.Build
 import java.io.ByteArrayOutputStream
 
 object InstalledApps {
     fun list(context: Context): List<Map<String, Any?>> {
         val pm = context.packageManager
         val intent = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER)
-        val resolved = pm.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)
+        val resolved = queryLauncherActivities(pm, intent)
         val seen = HashSet<String>()
         val apps = ArrayList<Map<String, Any?>>()
         for (info in resolved) {
@@ -21,7 +23,7 @@ object InstalledApps {
             if (!seen.add(packageName)) continue
             if (packageName == context.packageName) continue
             val label = info.loadLabel(pm).toString()
-            val icon = drawableToPng(info.loadIcon(pm), 96)
+            val icon = runCatching { drawableToPng(info.loadIcon(pm), 96) }.getOrNull()
             apps.add(
                 mapOf(
                     "packageName" to packageName,
@@ -32,6 +34,18 @@ object InstalledApps {
         }
         apps.sortBy { (it["label"] as String).lowercase() }
         return apps
+    }
+
+    private fun queryLauncherActivities(
+        pm: PackageManager,
+        intent: Intent,
+    ): List<ResolveInfo> {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            pm.queryIntentActivities(intent, PackageManager.ResolveInfoFlags.of(0))
+        } else {
+            @Suppress("DEPRECATION")
+            pm.queryIntentActivities(intent, 0)
+        }
     }
 
     private fun drawableToPng(drawable: Drawable, size: Int): ByteArray {
