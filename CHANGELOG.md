@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2026.830.0](https://github.com/komapotter/miruna/compare/v2026.829.1...v2026.830.0) - 2026-08-30
+
+### Other Changes
+- Hide package names from installed app list and update release APK naming in workflow by @komapotter in https://github.com/komapotter/miruna/pull/10
+- Add Android release signing configuration to CI and Gradle build for release APKs by @komapotter in https://github.com/komapotter/miruna/pull/13
+
 ## [v2026.829.1](https://github.com/komapotter/miruna/compare/v2026.829.0...v2026.829.1) - 2026-08-29
 
 ### Other Changes
