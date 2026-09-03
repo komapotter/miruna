@@ -1,7 +1,7 @@
 package com.komapotter.miruna.monitor
 
 import android.content.Context
-import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.PixelFormat
 import android.graphics.Typeface
@@ -117,11 +117,16 @@ class WarningOverlay(private val context: Context) {
         val noButton =
             Button(context).apply {
                 text = "いいえ"
+                backgroundTintList = ColorStateList.valueOf(0xFF2563EB.toInt())
+                setTextColor(Color.WHITE)
+                typeface = Typeface.DEFAULT_BOLD
                 setOnClickListener { onNo() }
             }
         val yesButton =
             Button(context).apply {
                 text = "はい"
+                backgroundTintList = ColorStateList.valueOf(Color.TRANSPARENT)
+                setTextColor(0xFF64748B.toInt())
                 setOnClickListener { onYes() }
             }
 

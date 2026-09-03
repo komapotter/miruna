@@ -129,6 +129,22 @@ void main() {
     });
   });
 
+  group('Cooldown.shouldRecordClose', () {
+    test('does not record a close for an unconfirmed warning', () {
+      expect(
+        Cooldown.shouldRecordClose(unconfirmedWarning: true),
+        isFalse,
+      );
+    });
+
+    test('records a close for a confirmed or normal session', () {
+      expect(
+        Cooldown.shouldRecordClose(unconfirmedWarning: false),
+        isTrue,
+      );
+    });
+  });
+
   group('formatWarningPeriod', () {
     test('formats hours and minutes', () {
       expect(formatWarningPeriod(const Duration(hours: 1)), '1時間');
