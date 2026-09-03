@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2026.903.0](https://github.com/komapotter/miruna/compare/v2026.830.0...v2026.903.0) - 2026-09-03
+
+### Other Changes
+- Add shouldRecordClose logic to prevent recording close on unconfirmed warning sessions by @komapotter in https://github.com/komapotter/miruna/pull/15
+
 ## [v2026.830.0](https://github.com/komapotter/miruna/compare/v2026.829.1...v2026.830.0) - 2026-08-30
 
 ### Other Changes
