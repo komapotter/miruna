@@ -22,6 +22,8 @@ object Cooldown {
         return ACTION_ALLOW
     }
 
+    fun shouldRecordClose(unconfirmedWarning: Boolean): Boolean = !unconfirmedWarning
+
     fun formatWarningPeriod(ms: Long): String {
         val totalMinutes = (ms / 60_000L).coerceAtLeast(0)
         val hours = totalMinutes / 60

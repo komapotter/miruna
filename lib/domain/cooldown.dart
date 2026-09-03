@@ -59,4 +59,9 @@ class Cooldown {
     }
     return until.difference(now);
   }
+
+  /// Leaving an unconfirmed warning session must not reset [lastClosedAt].
+  static bool shouldRecordClose({required bool unconfirmedWarning}) {
+    return !unconfirmedWarning;
+  }
 }

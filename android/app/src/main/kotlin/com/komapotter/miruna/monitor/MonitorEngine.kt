@@ -11,6 +11,7 @@ class MonitorEngine private constructor(context: Context) {
     private val overlay = WarningOverlay(appContext)
     private val mainHandler = Handler(Looper.getMainLooper())
     private val pendingCloses = HashMap<String, Runnable>()
+    private val unconfirmedWarnings = HashSet<String>()
     private var currentPackage: String? = null
     var accessibilityActive: Boolean = false
 
@@ -38,6 +39,7 @@ class MonitorEngine private constructor(context: Context) {
                 nowMs = System.currentTimeMillis(),
             )
         if (action == Cooldown.ACTION_WARN) {
+            unconfirmedWarnings.add(packageName)
             mainHandler.post {
                 overlay.show(
                     packageName = packageName,
@@ -57,6 +59,7 @@ class MonitorEngine private constructor(context: Context) {
     }
 
     private fun confirmOpen(packageName: String) {
+        unconfirmedWarnings.remove(packageName)
         store.setSessionAllowed(packageName, true)
         overlay.dismiss()
     }
@@ -78,7 +81,10 @@ class MonitorEngine private constructor(context: Context) {
             synchronized(this) {
                 pendingCloses.remove(packageName)
                 if (currentPackage == packageName) return@Runnable
-                store.recordClose(packageName, System.currentTimeMillis())
+                val unconfirmed = unconfirmedWarnings.remove(packageName)
+                if (Cooldown.shouldRecordClose(unconfirmedWarning = unconfirmed)) {
+                    store.recordClose(packageName, System.currentTimeMillis())
+                }
                 if (overlay.currentPackage == packageName) {
                     overlay.dismiss()
                 }
