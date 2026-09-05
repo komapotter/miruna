@@ -1,13 +1,14 @@
 ---
-description: GitHub Actions CI only runs on feature/ and fix/ PR branches
+description: GitHub Actions CI runs on feature/, fix/, and cursor/ PR branches
 alwaysApply: true
 ---
 
 # CI が走るブランチ名
 
-`.github/workflows/ci.yml` の CI は、PR の head ブランチが次のどちらかで始まるときだけ実行されます。
+`.github/workflows/ci.yml` の CI は、PR の head ブランチが次のいずれかで始まるとき実行されます。
 
 - `feature/`
 - `fix/`
+- `cursor/`
 
-ブランチを切って PR を出すときは、機能追加なら `feature/...`、バグ修正なら `fix/...` を使う。`cursor/` など他の接頭辞では CI は動かない。ブランチ名は小文字にする。
+ブランチを切って PR を出すときは、機能追加なら `feature/...`、バグ修正なら `fix/...`、Cloud Agent など `cursor/...` も使う。ブランチ名は小文字にする。
