@@ -170,12 +170,17 @@ class DecisionBarChart extends StatelessWidget {
 
   final List<PeriodDecisionCount> series;
 
+  /// Tallest stacked bar: yes + no in the same period.
+  static int maxStackedCount(List<PeriodDecisionCount> series) {
+    return series.fold<int>(0, (max, item) {
+      final total = item.totalCount;
+      return total > max ? total : max;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final maxCount = series.fold<int>(0, (max, item) {
-      final taller = item.yesCount > item.noCount ? item.yesCount : item.noCount;
-      return taller > max ? taller : max;
-    });
+    final maxCount = maxStackedCount(series);
     return Semantics(
       label: series
           .map(
@@ -205,8 +210,7 @@ class _DecisionBarPainter extends CustomPainter {
     final chartHeight = size.height - labelHeight - topPad;
     if (chartHeight <= 0) return;
     final groupWidth = size.width / series.length;
-    final barWidth = (groupWidth * 0.28).clamp(4.0, 16.0);
-    final gap = 3.0;
+    final barWidth = (groupWidth * 0.45).clamp(6.0, 22.0);
     final baseline = topPad + chartHeight;
     final scale = maxCount == 0 ? 0.0 : chartHeight / maxCount;
     final gridPaint = Paint()
@@ -222,19 +226,13 @@ class _DecisionBarPainter extends CustomPainter {
     for (var i = 0; i < series.length; i++) {
       final item = series[i];
       final center = (i + 0.5) * groupWidth;
-      _drawBar(
+      _drawStackedBar(
         canvas,
-        offset: Offset(center - barWidth - gap / 2, baseline),
+        left: center - barWidth / 2,
+        baseline: baseline,
         width: barWidth,
-        height: item.yesCount * scale,
-        color: DecisionBarChart.yesColor,
-      );
-      _drawBar(
-        canvas,
-        offset: Offset(center + gap / 2, baseline),
-        width: barWidth,
-        height: item.noCount * scale,
-        color: DecisionBarChart.noColor,
+        yesHeight: item.yesCount * scale,
+        noHeight: item.noCount * scale,
       );
       final label = DecisionCounts.formatPeriodLabel(item.period, item.periodKey);
       final painter = TextPainter(
@@ -248,19 +246,51 @@ class _DecisionBarPainter extends CustomPainter {
     }
   }
 
-  void _drawBar(
+  void _drawStackedBar(
     Canvas canvas, {
-    required Offset offset,
+    required double left,
+    required double baseline,
     required double width,
-    required double height,
-    required Color color,
+    required double yesHeight,
+    required double noHeight,
   }) {
-    if (height <= 0) return;
-    final rect = Rect.fromLTWH(offset.dx, offset.dy - height, width, height);
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(rect, const Radius.circular(3)),
-      Paint()..color = color,
-    );
+    const radius = Radius.circular(3);
+    if (yesHeight > 0) {
+      final yesRect = Rect.fromLTWH(
+        left,
+        baseline - yesHeight,
+        width,
+        yesHeight,
+      );
+      canvas.drawRRect(
+        noHeight > 0
+            ? RRect.fromRectAndCorners(
+                yesRect,
+                bottomLeft: radius,
+                bottomRight: radius,
+              )
+            : RRect.fromRectAndRadius(yesRect, radius),
+        Paint()..color = DecisionBarChart.yesColor,
+      );
+    }
+    if (noHeight > 0) {
+      final noRect = Rect.fromLTWH(
+        left,
+        baseline - yesHeight - noHeight,
+        width,
+        noHeight,
+      );
+      canvas.drawRRect(
+        yesHeight > 0
+            ? RRect.fromRectAndCorners(
+                noRect,
+                topLeft: radius,
+                topRight: radius,
+              )
+            : RRect.fromRectAndRadius(noRect, radius),
+        Paint()..color = DecisionBarChart.noColor,
+      );
+    }
   }
 
   @override
