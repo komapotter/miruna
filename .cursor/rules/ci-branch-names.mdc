@@ -11,4 +11,11 @@ alwaysApply: true
 - `fix/`
 - `cursor/`
 
-ブランチを切って PR を出すときは、機能追加なら `feature/...`、バグ修正なら `fix/...`、Cloud Agent など `cursor/...` も使う。ブランチ名は小文字にする。
+この3つは同等に CI 対象です。Cloud Agent の `cursor/...` でも Actions は走ります。ブランチ名は小文字にする。
+
+CI ジョブでは次を実行します。
+
+- `flutter pub get`
+- `flutter analyze`
+- `flutter test`
+- `flutter build apk --debug`
