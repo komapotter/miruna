@@ -217,4 +217,11 @@ class DecisionCounts {
         .where((entry) => entry.packageName == packageName && entry.dateKey == key)
         .fold<int>(0, (sum, entry) => sum + entry.yesCount);
   }
+
+  /// Spec for the Android warning overlay. [yesCount] is today's confirmed
+  /// unfreezes so far, not including the dialog currently on screen.
+  static String formatTodayOpenMessage(int yesCount) {
+    final count = yesCount < 0 ? 0 : yesCount;
+    return '今日は$count回このアプリを開きました';
+  }
 }

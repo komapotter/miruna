@@ -28,6 +28,7 @@ class WarningOverlay(private val context: Context) {
         packageName: String,
         appName: String,
         warningPeriodMs: Long,
+        todayYesCount: Int,
         onYes: () -> Unit,
         onNo: () -> Unit,
     ) {
@@ -35,7 +36,7 @@ class WarningOverlay(private val context: Context) {
         dismiss()
         currentPackage = packageName
         val period = Cooldown.formatWarningPeriod(warningPeriodMs)
-        val overlay = buildView(appName, period, onYes, onNo)
+        val overlay = buildView(appName, period, todayYesCount, onYes, onNo)
         val params =
             WindowManager.LayoutParams(
                 WindowManager.LayoutParams.MATCH_PARENT,
@@ -71,6 +72,7 @@ class WarningOverlay(private val context: Context) {
     private fun buildView(
         appName: String,
         period: String,
+        todayYesCount: Int,
         onYes: () -> Unit,
         onNo: () -> Unit,
     ): View {
@@ -105,7 +107,14 @@ class WarningOverlay(private val context: Context) {
                 text = "前回の起動から${period}経っていません。本当に開きますか？"
                 setTextColor(0xFF334155.toInt())
                 setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
-                setPadding(0, dp(12), 0, dp(20))
+                setPadding(0, dp(12), 0, dp(8))
+            }
+        val todayCount =
+            TextView(context).apply {
+                text = DecisionCounts.formatTodayOpenMessage(todayYesCount)
+                setTextColor(0xFF64748B.toInt())
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, 15f)
+                setPadding(0, 0, 0, dp(20))
             }
 
         val buttons =
@@ -141,6 +150,7 @@ class WarningOverlay(private val context: Context) {
 
         card.addView(title)
         card.addView(message)
+        card.addView(todayCount)
         card.addView(buttons)
         root.addView(
             card,
