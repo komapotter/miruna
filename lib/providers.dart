@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:miruna/domain/decision_counts.dart';
 import 'package:miruna/domain/watched_app.dart';
 import 'package:miruna/platform/android_app_monitor.dart';
 import 'package:miruna/platform/app_monitor.dart';
@@ -81,3 +82,10 @@ final monitorControllerProvider =
     AsyncNotifierProvider<MonitorController, MonitorSnapshot>(
       MonitorController.new,
     );
+
+final decisionCountsProvider =
+    FutureProvider.autoDispose.family<DecisionCounts, String>((ref, packageName) {
+      return ref.read(appMonitorProvider).getDecisionCounts(
+        packageName: packageName,
+      );
+    });

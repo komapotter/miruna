@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:miruna/domain/duration_format.dart';
 import 'package:miruna/domain/watched_app.dart';
+import 'package:miruna/features/apps/decision_graph_screen.dart';
 import 'package:miruna/features/common/period_picker.dart';
 import 'package:miruna/providers.dart';
 
@@ -39,6 +40,24 @@ class _AppEditScreenState extends ConsumerState<AppEditScreen> {
           PeriodPicker(
             value: _period,
             onChanged: (value) => setState(() => _period = value),
+          ),
+          const SizedBox(height: 16),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const Icon(Icons.bar_chart_outlined),
+            title: const Text('記録を見る'),
+            subtitle: const Text('はい / いいえの回数を年・月・日で表示します'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => DecisionGraphScreen(
+                    packageName: widget.app.packageName,
+                    displayName: widget.app.displayName,
+                  ),
+                ),
+              );
+            },
           ),
           const SizedBox(height: 24),
           FilledButton(

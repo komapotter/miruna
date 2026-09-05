@@ -218,6 +218,101 @@ class DecisionCounts {
         .fold<int>(0, (sum, entry) => sum + entry.yesCount);
   }
 
+  bool get hasDecisions =>
+      entries.any((entry) => entry.yesCount > 0 || entry.noCount > 0);
+
+  /// Local `yyyy-MM` key for month buckets.
+  static String yearMonthKey(DateTime date) {
+    final local = date.isUtc ? date.toLocal() : date;
+    final year = local.year.toString().padLeft(4, '0');
+    final month = local.month.toString().padLeft(2, '0');
+    return '$year-$month';
+  }
+
+  static String formatPeriodLabel(DecisionPeriod period, String periodKey) {
+    switch (period) {
+      case DecisionPeriod.day:
+        if (periodKey.length < 10) return periodKey;
+        final month = int.parse(periodKey.substring(5, 7));
+        final day = int.parse(periodKey.substring(8, 10));
+        return '$month/$day';
+      case DecisionPeriod.month:
+        if (periodKey.length < 7) return periodKey;
+        return '${int.parse(periodKey.substring(5, 7))}月';
+      case DecisionPeriod.year:
+        return periodKey;
+    }
+  }
+
+  /// Consecutive day / month / year keys to plot, including empty buckets.
+  static List<String> chartPeriodKeys({
+    required DecisionPeriod period,
+    required DateTime now,
+    int? firstYear,
+  }) {
+    final local = now.isUtc ? now.toLocal() : now;
+    switch (period) {
+      case DecisionPeriod.day:
+        final start = DateTime(local.year, local.month, local.day - 13);
+        return [
+          for (var i = 0; i < 14; i++)
+            localDateKey(DateTime(start.year, start.month, start.day + i)),
+        ];
+      case DecisionPeriod.month:
+        final start = DateTime(local.year, local.month - 11, 1);
+        return [
+          for (var i = 0; i < 12; i++)
+            yearMonthKey(DateTime(start.year, start.month + i, 1)),
+        ];
+      case DecisionPeriod.year:
+        final endYear = local.year;
+        final startYear = firstYear == null || firstYear > endYear
+            ? endYear
+            : firstYear;
+        return [for (var year = startYear; year <= endYear; year++) '$year'];
+    }
+  }
+
+  /// Fills [chartPeriodKeys] so the graph keeps a stable axis.
+  List<PeriodDecisionCount> chartSeries({
+    required DecisionPeriod period,
+    required DateTime now,
+    String? packageName,
+  }) {
+    final scoped = filtered(packageName: packageName);
+    final grouped = <String, PeriodDecisionCount>{};
+    for (final item in scoped.groupedBy(period)) {
+      final existing = grouped[item.periodKey];
+      grouped[item.periodKey] = existing == null
+          ? PeriodDecisionCount(
+              packageName: packageName ?? item.packageName,
+              period: period,
+              periodKey: item.periodKey,
+              yesCount: item.yesCount,
+              noCount: item.noCount,
+            )
+          : existing.add(item.yesCount, item.noCount);
+    }
+    final firstYear = scoped.entries
+        .map((entry) => int.tryParse(entry.periodKey(DecisionPeriod.year)))
+        .whereType<int>()
+        .fold<int?>(null, (min, year) => min == null || year < min ? year : min);
+    final keys = chartPeriodKeys(
+      period: period,
+      now: now,
+      firstYear: firstYear,
+    );
+    return [
+      for (final key in keys)
+        grouped[key] ??
+            PeriodDecisionCount(
+              packageName: packageName ?? '',
+              period: period,
+              periodKey: key,
+            ),
+    ];
+  }
+
   /// Spec for the Android warning overlay. [yesCount] is today's confirmed
   /// unfreezes so far, not including the dialog currently on screen.
   static String formatTodayOpenMessage(int yesCount) {
