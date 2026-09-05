@@ -177,18 +177,12 @@ void main() {
     });
 
     test('formats the overlay copy for today yes count', () {
-      expect(
-        DecisionCounts.formatTodayOpenMessage(0),
-        '今日は0回このアプリを開きました',
-      );
+      expect(DecisionCounts.formatTodayOpenMessage(0), '');
       expect(
         DecisionCounts.formatTodayOpenMessage(3),
         '今日は3回このアプリを開きました',
       );
-      expect(
-        DecisionCounts.formatTodayOpenMessage(-1),
-        '今日は0回このアプリを開きました',
-      );
+      expect(DecisionCounts.formatTodayOpenMessage(-1), '');
     });
 
     test('builds a 14-day chart series with empty buckets filled', () {
