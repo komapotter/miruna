@@ -316,12 +316,12 @@ class DecisionCounts {
   /// Spec for the Android warning overlay. [yesCount] is today's confirmed
   /// unfreezes so far, not including the dialog currently on screen.
   ///
-  /// Empty when there are no confirmed opens yet, so the overlay omits the
-  /// line instead of saying "0回".
+  /// Empty when there are no confirmed unfreezes yet, so the overlay omits
+  /// the line instead of saying "0回".
   static String formatTodayOpenMessage(int yesCount) {
     if (yesCount <= 0) {
       return '';
     }
-    return '今日は$yesCount回このアプリを開きました';
+    return '今日は$yesCount回解除しました';
   }
 }

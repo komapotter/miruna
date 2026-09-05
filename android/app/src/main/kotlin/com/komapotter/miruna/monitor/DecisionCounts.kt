@@ -25,6 +25,6 @@ object DecisionCounts {
 
     fun formatTodayOpenMessage(yesCount: Int): String {
         if (yesCount <= 0) return ""
-        return "今日は${yesCount}回このアプリを開きました"
+        return "今日は${yesCount}回解除しました"
     }
 }
