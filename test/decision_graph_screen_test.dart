@@ -19,6 +19,28 @@ const _app = WatchedApp(
 final _now = DateTime(2026, 9, 5, 14, 30);
 
 void main() {
+  test('scales stacked bars by yes plus no, not the taller series', () {
+    expect(
+      DecisionBarChart.maxStackedCount(const [
+        PeriodDecisionCount(
+          packageName: 'com.instagram.android',
+          period: DecisionPeriod.day,
+          periodKey: '2026-09-04',
+          yesCount: 5,
+          noCount: 1,
+        ),
+        PeriodDecisionCount(
+          packageName: 'com.instagram.android',
+          period: DecisionPeriod.day,
+          periodKey: '2026-09-05',
+          yesCount: 3,
+          noCount: 4,
+        ),
+      ]),
+      7,
+    );
+  });
+
   testWidgets('opens the graph from the app edit screen', (tester) async {
     await tester.pumpWidget(
       ProviderScope(

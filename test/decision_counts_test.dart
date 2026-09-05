@@ -274,6 +274,19 @@ void main() {
       );
     });
 
+    test('sums yes and no for a stacked bar height', () {
+      expect(
+        const PeriodDecisionCount(
+          packageName: 'com.foo',
+          period: DecisionPeriod.day,
+          periodKey: '2026-09-05',
+          yesCount: 2,
+          noCount: 3,
+        ).totalCount,
+        5,
+      );
+    });
+
     test('formats chart axis labels', () {
       expect(
         DecisionCounts.formatPeriodLabel(DecisionPeriod.day, '2026-09-05'),

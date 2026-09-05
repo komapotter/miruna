@@ -66,6 +66,9 @@ class PeriodDecisionCount {
   final int yesCount;
   final int noCount;
 
+  /// Combined height used by the stacked yes/no bar chart.
+  int get totalCount => yesCount + noCount;
+
   PeriodDecisionCount add(int yes, int no) {
     return PeriodDecisionCount(
       packageName: packageName,
