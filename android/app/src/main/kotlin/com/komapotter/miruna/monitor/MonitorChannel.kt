@@ -100,6 +100,14 @@ class MonitorChannel(
                     }
                     result.success(null)
                 }
+                "getDecisionCounts" ->
+                    result.success(
+                        store.getDecisionCounts(
+                            packageName = call.argument<String>("packageName"),
+                            fromDate = call.argument<String>("fromDate"),
+                            toDate = call.argument<String>("toDate"),
+                        ),
+                    )
                 else -> result.notImplemented()
             }
         } catch (error: Exception) {

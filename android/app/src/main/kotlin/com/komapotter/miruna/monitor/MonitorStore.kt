@@ -79,6 +79,48 @@ class MonitorStore(context: Context) {
         prefs.edit().putBoolean(KEY_MONITORING, enabled).apply()
     }
 
+    fun recordDecision(packageName: String, yes: Boolean, nowMs: Long = System.currentTimeMillis()) {
+        val root = JSONObject(prefs.getString(KEY_DECISIONS, "{}") ?: "{}")
+        val appObj = root.optJSONObject(packageName) ?: JSONObject().also { root.put(packageName, it) }
+        val date = DecisionCounts.localDateKey(nowMs)
+        val day = appObj.optJSONObject(date) ?: JSONObject().also { appObj.put(date, it) }
+        val key = if (yes) "yes" else "no"
+        day.put(key, day.optInt(key, 0) + 1)
+        prefs.edit().putString(KEY_DECISIONS, root.toString()).apply()
+    }
+
+    fun getDecisionCounts(
+        packageName: String?,
+        fromDate: String?,
+        toDate: String?,
+    ): List<Map<String, Any>> {
+        val root = JSONObject(prefs.getString(KEY_DECISIONS, "{}") ?: "{}")
+        val packages =
+            if (packageName.isNullOrEmpty()) {
+                root.keys().asSequence().toList().sorted()
+            } else {
+                listOf(packageName)
+            }
+        val result = ArrayList<Map<String, Any>>()
+        for (pkg in packages) {
+            val days = root.optJSONObject(pkg) ?: continue
+            val dateKeys = days.keys().asSequence().toList().sorted()
+            for (date in dateKeys) {
+                if (!DecisionCounts.dateInRange(date, fromDate, toDate)) continue
+                val tally = days.optJSONObject(date) ?: continue
+                result.add(
+                    mapOf(
+                        "packageName" to pkg,
+                        "date" to date,
+                        "yesCount" to tally.optInt("yes", 0),
+                        "noCount" to tally.optInt("no", 0),
+                    ),
+                )
+            }
+        }
+        return result
+    }
+
     private fun update(
         packageName: String,
         transform: (WatchedAppEntity) -> WatchedAppEntity,
@@ -128,5 +170,6 @@ class MonitorStore(context: Context) {
         private const val KEY_APPS = "watched_apps"
         private const val KEY_DEFAULT_PERIOD = "default_warning_period_ms"
         private const val KEY_MONITORING = "monitoring_enabled"
+        private const val KEY_DECISIONS = "decision_counts"
     }
 }

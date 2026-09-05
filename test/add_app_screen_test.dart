@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:miruna/domain/decision_counts.dart';
 import 'package:miruna/domain/watched_app.dart';
 import 'package:miruna/features/apps/add_app_screen.dart';
 import 'package:miruna/platform/app_monitor.dart';
@@ -65,4 +66,11 @@ class _FakeAppMonitor implements AppMonitor {
 
   @override
   Future<void> setMonitoring(bool enabled) async {}
+
+  @override
+  Future<DecisionCounts> getDecisionCounts({
+    String? packageName,
+    DateTime? from,
+    DateTime? to,
+  }) async => DecisionCounts.empty;
 }

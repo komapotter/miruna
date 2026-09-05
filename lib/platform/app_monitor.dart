@@ -1,3 +1,4 @@
+import 'package:miruna/domain/decision_counts.dart';
 import 'package:miruna/domain/watched_app.dart';
 import 'package:miruna/platform/installed_app.dart';
 import 'package:miruna/platform/permission_status.dart';
@@ -24,4 +25,10 @@ abstract class AppMonitor {
   Future<bool> isMonitoring();
 
   Future<void> setMonitoring(bool enabled);
+
+  Future<DecisionCounts> getDecisionCounts({
+    String? packageName,
+    DateTime? from,
+    DateTime? to,
+  });
 }
