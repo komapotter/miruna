@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2026.905.1](https://github.com/komapotter/miruna/compare/v2026.905.0...v2026.905.1) - 2026-09-05
+
+### Other Changes
+- 警告ダイアログの回数を「解除しました」と表示する by @komapotter in https://github.com/komapotter/miruna/pull/27
+
 ## [v2026.905.0](https://github.com/komapotter/miruna/compare/v2026.903.0...v2026.905.0) - 2026-09-05
 
 ### Other Changes
