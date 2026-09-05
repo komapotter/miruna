@@ -15,6 +15,7 @@ void main() {
     await tester.pumpWidget(const ProviderScope(child: MirunaApp()));
     await tester.pumpAndSettle();
 
+    expect(find.text('見たな'), findsOneWidget);
     expect(find.text('監視は Android でのみ利用できます'), findsOneWidget);
 
     await tester.tap(find.text('始める'));

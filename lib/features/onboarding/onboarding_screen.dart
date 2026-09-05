@@ -53,7 +53,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
     return ListView(
       padding: const EdgeInsets.all(24),
       children: [
-        Text('ミルナ', style: Theme.of(context).textTheme.headlineMedium),
+        Text('見たな', style: Theme.of(context).textTheme.headlineMedium),
         const SizedBox(height: 8),
         Text(
           '対象アプリを閉じてから警告期間内にまた開こうとすると、本当に開くか確認します。',
