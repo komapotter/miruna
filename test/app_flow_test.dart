@@ -20,7 +20,7 @@ void main() {
     await tester.tap(find.text('始める'));
     await tester.pumpAndSettle();
 
-    expect(find.text('監視するアプリを追加してください'), findsOneWidget);
+    expect(find.text('気になるアプリを足してください'), findsOneWidget);
 
     await tester.tap(find.byIcon(Icons.settings_outlined));
     await tester.pumpAndSettle();

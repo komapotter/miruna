@@ -165,8 +165,8 @@ class _LegendSwatch extends StatelessWidget {
 class DecisionBarChart extends StatelessWidget {
   const DecisionBarChart({super.key, required this.series});
 
-  static const yesColor = Color(0xFF0F766E);
-  static const noColor = Color(0xFF2563EB);
+  static const yesColor = Color(0xFFB91C1C);
+  static const noColor = Color(0xFF6B7280);
 
   final List<PeriodDecisionCount> series;
 
@@ -210,12 +210,12 @@ class _DecisionBarPainter extends CustomPainter {
     final baseline = topPad + chartHeight;
     final scale = maxCount == 0 ? 0.0 : chartHeight / maxCount;
     final gridPaint = Paint()
-      ..color = const Color(0xFFE2E8F0)
+      ..color = const Color(0xFF3F2A2A)
       ..strokeWidth = 1;
     canvas.drawLine(Offset(0, baseline), Offset(size.width, baseline), gridPaint);
 
     final labelStyle = TextStyle(
-      color: const Color(0xFF64748B),
+      color: const Color(0xFF9CA3AF),
       fontSize: series.length > 10 ? 10 : 11,
     );
 

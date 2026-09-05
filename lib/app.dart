@@ -10,8 +10,8 @@ class MirunaApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = ColorScheme.fromSeed(
-      seedColor: const Color(0xFF0F766E),
-      brightness: Brightness.light,
+      seedColor: const Color(0xFF8B1A1A),
+      brightness: Brightness.dark,
     );
     return MaterialApp(
       title: 'ミルナ',
@@ -25,6 +25,7 @@ class MirunaApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: scheme,
         useMaterial3: true,
+        scaffoldBackgroundColor: const Color(0xFF140C0C),
         appBarTheme: AppBarTheme(
           backgroundColor: scheme.surface,
           foregroundColor: scheme.onSurface,
