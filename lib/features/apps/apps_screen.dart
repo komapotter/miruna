@@ -16,7 +16,7 @@ class AppsScreen extends ConsumerWidget {
     final snapshot = ref.watch(monitorControllerProvider);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('ミルナ'),
+        title: const Text('見たな'),
         actions: [
           IconButton(
             icon: const Icon(Icons.settings_outlined),
