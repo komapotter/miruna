@@ -28,5 +28,6 @@ void main() {
     expect(apps, hasLength(1));
     expect(apps.single.packageName, 'com.slack');
     expect(apps.single.warningPeriod, const Duration(hours: 1));
+    expect((await monitor.getDecisionCounts()).entries, isEmpty);
   });
 }

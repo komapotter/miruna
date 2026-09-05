@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:miruna/domain/cooldown.dart';
+import 'package:miruna/domain/decision_counts.dart';
 import 'package:miruna/domain/watched_app.dart';
 import 'package:miruna/platform/app_monitor.dart';
 import 'package:miruna/platform/installed_app.dart';
@@ -84,6 +85,13 @@ class StubAppMonitor implements AppMonitor {
 
   @override
   Future<void> setMonitoring(bool enabled) async {}
+
+  @override
+  Future<DecisionCounts> getDecisionCounts({
+    String? packageName,
+    DateTime? from,
+    DateTime? to,
+  }) async => DecisionCounts.empty;
 
   Future<void> _saveApps(List<WatchedApp> apps) async {
     final prefs = await _prefs;

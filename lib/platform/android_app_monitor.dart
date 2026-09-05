@@ -1,5 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:miruna/domain/cooldown.dart';
+import 'package:miruna/domain/decision_counts.dart';
 import 'package:miruna/domain/watched_app.dart';
 import 'package:miruna/platform/app_monitor.dart';
 import 'package:miruna/platform/installed_app.dart';
@@ -80,5 +81,22 @@ class AndroidAppMonitor implements AppMonitor {
   @override
   Future<void> setMonitoring(bool enabled) {
     return _channel.invokeMethod<void>('setMonitoring', {'enabled': enabled});
+  }
+
+  @override
+  Future<DecisionCounts> getDecisionCounts({
+    String? packageName,
+    DateTime? from,
+    DateTime? to,
+  }) async {
+    final raw = await _channel.invokeMethod<List<Object?>>(
+      'getDecisionCounts',
+      {
+        'packageName': packageName,
+        'fromDate': from == null ? null : DecisionCounts.localDateKey(from),
+        'toDate': to == null ? null : DecisionCounts.localDateKey(to),
+      },
+    );
+    return DecisionCounts.fromChannelList(raw ?? const []);
   }
 }

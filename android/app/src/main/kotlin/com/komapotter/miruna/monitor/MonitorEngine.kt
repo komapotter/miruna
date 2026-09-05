@@ -46,7 +46,7 @@ class MonitorEngine private constructor(context: Context) {
                     appName = app.displayName,
                     warningPeriodMs = app.warningPeriodMs,
                     onYes = { confirmOpen(packageName) },
-                    onNo = { declineOpen() },
+                    onNo = { declineOpen(packageName) },
                 )
             }
         } else {
@@ -60,11 +60,13 @@ class MonitorEngine private constructor(context: Context) {
 
     private fun confirmOpen(packageName: String) {
         unconfirmedWarnings.remove(packageName)
+        store.recordDecision(packageName, yes = true)
         store.setSessionAllowed(packageName, true)
         overlay.dismiss()
     }
 
-    private fun declineOpen() {
+    private fun declineOpen(packageName: String) {
+        store.recordDecision(packageName, yes = false)
         overlay.dismiss()
         val home =
             Intent(Intent.ACTION_MAIN).apply {
