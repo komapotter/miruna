@@ -191,6 +191,110 @@ void main() {
       );
     });
 
+    test('builds a 14-day chart series with empty buckets filled', () {
+      expect(
+        counts
+            .chartSeries(
+              period: DecisionPeriod.day,
+              now: day,
+              packageName: 'com.foo',
+            )
+            .map((item) => (item.periodKey, item.yesCount, item.noCount))
+            .toList(),
+        [
+          for (var i = 0; i < 14; i++)
+            (
+              DecisionCounts.localDateKey(DateTime(2026, 8, 23 + i)),
+              DateTime(2026, 8, 23 + i).day == 31
+                  ? 1
+                  : DateTime(2026, 8, 23 + i).month == 9 &&
+                        DateTime(2026, 8, 23 + i).day == 5
+                  ? 2
+                  : 0,
+              DateTime(2026, 8, 23 + i).day == 31
+                  ? 2
+                  : DateTime(2026, 8, 23 + i).month == 9 &&
+                        DateTime(2026, 8, 23 + i).day == 5
+                  ? 1
+                  : 0,
+            ),
+        ],
+      );
+    });
+
+    test('builds a 12-month chart series and year keys from first record', () {
+      expect(
+        counts
+            .chartSeries(
+              period: DecisionPeriod.month,
+              now: day,
+              packageName: 'com.foo',
+            )
+            .map((item) => (item.periodKey, item.yesCount, item.noCount))
+            .toList(),
+        [
+          for (final key in [
+            '2025-10',
+            '2025-11',
+            '2025-12',
+            '2026-01',
+            '2026-02',
+            '2026-03',
+            '2026-04',
+            '2026-05',
+            '2026-06',
+            '2026-07',
+            '2026-08',
+            '2026-09',
+          ])
+            (
+              key,
+              key == '2026-08'
+                  ? 1
+                  : key == '2026-09'
+                  ? 2
+                  : 0,
+              key == '2026-08'
+                  ? 2
+                  : key == '2026-09'
+                  ? 1
+                  : 0,
+            ),
+        ],
+      );
+      expect(
+        counts.chartSeries(
+          period: DecisionPeriod.year,
+          now: day,
+          packageName: 'com.foo',
+        ),
+        [
+          const PeriodDecisionCount(
+            packageName: 'com.foo',
+            period: DecisionPeriod.year,
+            periodKey: '2026',
+            yesCount: 4,
+            noCount: 3,
+          ),
+        ],
+      );
+    });
+
+    test('formats chart axis labels', () {
+      expect(
+        DecisionCounts.formatPeriodLabel(DecisionPeriod.day, '2026-09-05'),
+        '9/5',
+      );
+      expect(
+        DecisionCounts.formatPeriodLabel(DecisionPeriod.month, '2026-09'),
+        '9月',
+      );
+      expect(
+        DecisionCounts.formatPeriodLabel(DecisionPeriod.year, '2026'),
+        '2026',
+      );
+    });
+
     test('maps channel payloads', () {
       expect(
         DecisionCounts.fromChannelList([
