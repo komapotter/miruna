@@ -1,5 +1,12 @@
 # Changelog
 
+## [v2026.905.0](https://github.com/komapotter/miruna/compare/v2026.903.0...v2026.905.0) - 2026-09-05
+
+### Other Changes
+- はい/いいえの回数をアプリ×日付で記録する by @komapotter in https://github.com/komapotter/miruna/pull/21
+- フリーズ中の警告に当日の解除回数を表示する by @komapotter in https://github.com/komapotter/miruna/pull/24
+- 記録データを年/月/日のグラフで表示する by @komapotter in https://github.com/komapotter/miruna/pull/25
+
 ## [v2026.903.0](https://github.com/komapotter/miruna/compare/v2026.830.0...v2026.903.0) - 2026-09-03
 
 ### Other Changes
