@@ -16,7 +16,7 @@ const _app = WatchedApp(
   warningPeriod: Duration(hours: 1),
 );
 
-const _now = DateTime(2026, 9, 5, 14, 30);
+final _now = DateTime(2026, 9, 5, 14, 30);
 
 void main() {
   testWidgets('opens the graph from the app edit screen', (tester) async {
@@ -44,7 +44,7 @@ void main() {
         overrides: [
           appMonitorProvider.overrideWithValue(_FakeAppMonitor()),
         ],
-        child: const MaterialApp(
+        child: MaterialApp(
           home: DecisionGraphScreen(
             packageName: 'com.instagram.android',
             displayName: 'Instagram',
@@ -82,7 +82,7 @@ void main() {
             ),
           ),
         ],
-        child: const MaterialApp(
+        child: MaterialApp(
           home: DecisionGraphScreen(
             packageName: 'com.instagram.android',
             displayName: 'Instagram',
