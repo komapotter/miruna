@@ -40,11 +40,13 @@ class MonitorEngine private constructor(context: Context) {
             )
         if (action == Cooldown.ACTION_WARN) {
             unconfirmedWarnings.add(packageName)
+            val todayYesCount = store.todayYesCount(packageName)
             mainHandler.post {
                 overlay.show(
                     packageName = packageName,
                     appName = app.displayName,
                     warningPeriodMs = app.warningPeriodMs,
+                    todayYesCount = todayYesCount,
                     onYes = { confirmOpen(packageName) },
                     onNo = { declineOpen(packageName) },
                 )

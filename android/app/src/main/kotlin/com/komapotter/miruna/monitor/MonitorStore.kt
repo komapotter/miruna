@@ -121,6 +121,12 @@ class MonitorStore(context: Context) {
         return result
     }
 
+    fun todayYesCount(packageName: String, nowMs: Long = System.currentTimeMillis()): Int {
+        val date = DecisionCounts.localDateKey(nowMs)
+        val day = getDecisionCounts(packageName, date, date).firstOrNull() ?: return 0
+        return day["yesCount"] as? Int ?: 0
+    }
+
     private fun update(
         packageName: String,
         transform: (WatchedAppEntity) -> WatchedAppEntity,

@@ -22,4 +22,9 @@ object DecisionCounts {
         if (toDate != null && dateKey > toDate) return false
         return true
     }
+
+    fun formatTodayOpenMessage(yesCount: Int): String {
+        val count = yesCount.coerceAtLeast(0)
+        return "今日は${count}回このアプリを開きました"
+    }
 }
