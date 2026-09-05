@@ -24,7 +24,7 @@ object DecisionCounts {
     }
 
     fun formatTodayOpenMessage(yesCount: Int): String {
-        val count = yesCount.coerceAtLeast(0)
-        return "今日は${count}回このアプリを開きました"
+        if (yesCount <= 0) return ""
+        return "今日は${yesCount}回解除しました"
     }
 }

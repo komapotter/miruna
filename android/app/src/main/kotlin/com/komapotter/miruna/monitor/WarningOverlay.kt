@@ -102,19 +102,13 @@ class WarningOverlay(private val context: Context) {
                 setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f)
                 typeface = Typeface.DEFAULT_BOLD
             }
+        val todayOpenMessage = DecisionCounts.formatTodayOpenMessage(todayYesCount)
         val message =
             TextView(context).apply {
                 text = "前回の起動から${period}経っていません。本当に開きますか？"
                 setTextColor(0xFF334155.toInt())
                 setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
-                setPadding(0, dp(12), 0, dp(8))
-            }
-        val todayCount =
-            TextView(context).apply {
-                text = DecisionCounts.formatTodayOpenMessage(todayYesCount)
-                setTextColor(0xFF64748B.toInt())
-                setTextSize(TypedValue.COMPLEX_UNIT_SP, 15f)
-                setPadding(0, 0, 0, dp(20))
+                setPadding(0, dp(12), 0, if (todayOpenMessage.isEmpty()) dp(20) else dp(8))
             }
 
         val buttons =
@@ -150,7 +144,16 @@ class WarningOverlay(private val context: Context) {
 
         card.addView(title)
         card.addView(message)
-        card.addView(todayCount)
+        if (todayOpenMessage.isNotEmpty()) {
+            val todayCount =
+                TextView(context).apply {
+                    text = todayOpenMessage
+                    setTextColor(0xFF64748B.toInt())
+                    setTextSize(TypedValue.COMPLEX_UNIT_SP, 15f)
+                    setPadding(0, 0, 0, dp(20))
+                }
+            card.addView(todayCount)
+        }
         card.addView(buttons)
         root.addView(
             card,
