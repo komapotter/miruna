@@ -45,7 +45,7 @@ class _AppEditScreenState extends ConsumerState<AppEditScreen> {
           ListTile(
             contentPadding: EdgeInsets.zero,
             leading: const Icon(Icons.bar_chart_outlined),
-            title: const Text('記録を見る'),
+            title: const Text('見てしまった回数'),
             subtitle: const Text('はい / いいえの回数を年・月・日で表示します'),
             trailing: const Icon(Icons.chevron_right),
             onTap: () {

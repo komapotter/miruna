@@ -5,6 +5,7 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.PixelFormat
 import android.graphics.Typeface
+import android.graphics.drawable.GradientDrawable
 import android.os.Build
 import android.util.TypedValue
 import android.view.Gravity
@@ -82,7 +83,7 @@ class WarningOverlay(private val context: Context) {
         val root =
             LinearLayout(context).apply {
                 orientation = LinearLayout.VERTICAL
-                setBackgroundColor(0xCC0F172A.toInt())
+                setBackgroundColor(0xE6140C0C.toInt())
                 gravity = Gravity.CENTER
                 setPadding(dp(24), dp(24), dp(24), dp(24))
             }
@@ -90,7 +91,11 @@ class WarningOverlay(private val context: Context) {
         val card =
             LinearLayout(context).apply {
                 orientation = LinearLayout.VERTICAL
-                setBackgroundColor(Color.WHITE)
+                background =
+                    GradientDrawable().apply {
+                        setColor(0xFF1A1212.toInt())
+                        setStroke(dp(1), 0xFF8B1A1A.toInt())
+                    }
                 setPadding(dp(24), dp(24), dp(24), dp(20))
                 elevation = dp(8).toFloat()
             }
@@ -98,7 +103,7 @@ class WarningOverlay(private val context: Context) {
         val title =
             TextView(context).apply {
                 text = appName
-                setTextColor(0xFF0F172A.toInt())
+                setTextColor(0xFFF5F0F0.toInt())
                 setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f)
                 typeface = Typeface.DEFAULT_BOLD
             }
@@ -106,7 +111,7 @@ class WarningOverlay(private val context: Context) {
         val message =
             TextView(context).apply {
                 text = "前回の起動から${period}経っていません。本当に開きますか？"
-                setTextColor(0xFF334155.toInt())
+                setTextColor(0xFFC4B8B8.toInt())
                 setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
                 setPadding(0, dp(12), 0, if (todayOpenMessage.isEmpty()) dp(20) else dp(8))
             }
@@ -120,7 +125,7 @@ class WarningOverlay(private val context: Context) {
         val noButton =
             Button(context).apply {
                 text = "いいえ"
-                backgroundTintList = ColorStateList.valueOf(0xFF2563EB.toInt())
+                backgroundTintList = ColorStateList.valueOf(0xFFB91C1C.toInt())
                 setTextColor(Color.WHITE)
                 typeface = Typeface.DEFAULT_BOLD
                 setOnClickListener { onNo() }
@@ -129,7 +134,7 @@ class WarningOverlay(private val context: Context) {
             Button(context).apply {
                 text = "はい"
                 backgroundTintList = ColorStateList.valueOf(Color.TRANSPARENT)
-                setTextColor(0xFF64748B.toInt())
+                setTextColor(0xFF8A8080.toInt())
                 setOnClickListener { onYes() }
             }
 
@@ -148,7 +153,7 @@ class WarningOverlay(private val context: Context) {
             val todayCount =
                 TextView(context).apply {
                     text = todayOpenMessage
-                    setTextColor(0xFF64748B.toInt())
+                    setTextColor(0xFF8A8080.toInt())
                     setTextSize(TypedValue.COMPLEX_UNIT_SP, 15f)
                     setPadding(0, 0, 0, dp(20))
                 }

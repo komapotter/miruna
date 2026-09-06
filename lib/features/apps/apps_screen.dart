@@ -101,7 +101,7 @@ class AppsScreen extends ConsumerWidget {
                 const Padding(
                   padding: EdgeInsets.only(top: 48),
                   child: Center(
-                    child: Text('監視するアプリを追加してください'),
+                    child: Text('気になるアプリを足してください'),
                   ),
                 )
               else

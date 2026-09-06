@@ -51,7 +51,7 @@ void main() {
       ),
     );
 
-    await tester.tap(find.text('記録を見る'));
+    await tester.tap(find.text('見てしまった回数'));
     await tester.pumpAndSettle();
 
     expect(find.text('Instagramの記録'), findsOneWidget);
