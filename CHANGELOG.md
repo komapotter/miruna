@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2026.906.3](https://github.com/komapotter/miruna/compare/v2026.906.2...v2026.906.3) - 2026-09-06
+
+### Other Changes
+- 見る / 見ないの文言と色をダイアログとグラフで揃える by @komapotter in https://github.com/komapotter/miruna/pull/37
+
 ## [v2026.906.2](https://github.com/komapotter/miruna/compare/v2026.906.1...v2026.906.2) - 2026-09-06
 
 ### Other Changes
