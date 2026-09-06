@@ -235,10 +235,7 @@ class DecisionCounts {
   static String formatPeriodLabel(DecisionPeriod period, String periodKey) {
     switch (period) {
       case DecisionPeriod.day:
-        if (periodKey.length < 10) return periodKey;
-        final month = int.parse(periodKey.substring(5, 7));
-        final day = int.parse(periodKey.substring(8, 10));
-        return '$month/$day';
+        return formatWeekdayLabel(periodKey);
       case DecisionPeriod.month:
         if (periodKey.length < 7) return periodKey;
         return '${int.parse(periodKey.substring(5, 7))}月';
@@ -247,7 +244,83 @@ class DecisionCounts {
     }
   }
 
-  /// Consecutive day / month / year keys to plot, including empty buckets.
+  /// Monday-first weekday for a `yyyy-MM-dd` key: 月…日.
+  static String formatWeekdayLabel(String dateKey) {
+    if (dateKey.length < 10) return dateKey;
+    const weekdays = ['月', '火', '水', '木', '金', '土', '日'];
+    final date = DateTime(
+      int.parse(dateKey.substring(0, 4)),
+      int.parse(dateKey.substring(5, 7)),
+      int.parse(dateKey.substring(8, 10)),
+    );
+    return weekdays[date.weekday - 1];
+  }
+
+  /// Visible chart window, e.g. `8月31日～9月6日` or `2025年10月～2026年9月`.
+  static String formatAggregationRange({
+    required DecisionPeriod period,
+    required List<String> periodKeys,
+  }) {
+    if (periodKeys.isEmpty) return '';
+    final first = periodKeys.first;
+    final last = periodKeys.last;
+    switch (period) {
+      case DecisionPeriod.day:
+        final crossYear = first.substring(0, 4) != last.substring(0, 4);
+        return '${_formatMonthDay(first, includeYear: crossYear)}～${_formatMonthDay(last, includeYear: crossYear)}';
+      case DecisionPeriod.month:
+        return first == last
+            ? _formatYearMonth(first)
+            : '${_formatYearMonth(first)}～${_formatYearMonth(last)}';
+      case DecisionPeriod.year:
+        return first == last ? '$first年' : '$first年～$last年';
+    }
+  }
+
+  /// Per-bucket average over the visible chart window.
+  static String formatAverageCounts({
+    required DecisionPeriod period,
+    required int yesTotal,
+    required int noTotal,
+    required int bucketCount,
+  }) {
+    late final String unit;
+    switch (period) {
+      case DecisionPeriod.day:
+        unit = '1日平均';
+      case DecisionPeriod.month:
+        unit = '1か月平均';
+      case DecisionPeriod.year:
+        unit = '1年平均';
+    }
+    final yes = bucketCount == 0 ? 0.0 : yesTotal / bucketCount;
+    final no = bucketCount == 0 ? 0.0 : noTotal / bucketCount;
+    return 'はい ${_formatAverage(yes)}回 · いいえ ${_formatAverage(no)}回 ($unit)';
+  }
+
+  static String _formatAverage(double value) {
+    final tenths = (value * 10).round() / 10;
+    if (tenths == tenths.roundToDouble()) {
+      return '${tenths.toInt()}';
+    }
+    return tenths.toStringAsFixed(1);
+  }
+
+  static String _formatMonthDay(String dateKey, {required bool includeYear}) {
+    if (dateKey.length < 10) return dateKey;
+    final month = int.parse(dateKey.substring(5, 7));
+    final day = int.parse(dateKey.substring(8, 10));
+    final md = '$month月$day日';
+    if (!includeYear) return md;
+    return '${int.parse(dateKey.substring(0, 4))}年$md';
+  }
+
+  static String _formatYearMonth(String periodKey) {
+    if (periodKey.length < 7) return periodKey;
+    return '${int.parse(periodKey.substring(0, 4))}年${int.parse(periodKey.substring(5, 7))}月';
+  }
+
+  /// Consecutive week (Mon-Sun) / month / year keys to plot, including empty buckets.
   static List<String> chartPeriodKeys({
     required DecisionPeriod period,
     required DateTime now,
@@ -256,10 +329,14 @@ class DecisionCounts {
     final local = now.isUtc ? now.toLocal() : now;
     switch (period) {
       case DecisionPeriod.day:
-        final start = DateTime(local.year, local.month, local.day - 13);
+        final monday = DateTime(
+          local.year,
+          local.month,
+          local.day - (local.weekday - 1),
+        );
         return [
-          for (var i = 0; i < 14; i++)
-            localDateKey(DateTime(start.year, start.month, start.day + i)),
+          for (var i = 0; i < 7; i++)
+            localDateKey(DateTime(monday.year, monday.month, monday.day + i)),
         ];
       case DecisionPeriod.month:
         final start = DateTime(local.year, local.month - 11, 1);

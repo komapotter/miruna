@@ -76,6 +76,10 @@ class _GraphBody extends StatelessWidget {
     final hasVisibleCounts = series.any(
       (item) => item.yesCount > 0 || item.noCount > 0,
     );
+    final rangeLabel = DecisionCounts.formatAggregationRange(
+      period: period,
+      periodKeys: [for (final item in series) item.periodKey],
+    );
 
     return RefreshIndicator(
       onRefresh: onRefresh,
@@ -84,13 +88,15 @@ class _GraphBody extends StatelessWidget {
         children: [
           SegmentedButton<DecisionPeriod>(
             segments: const [
-              ButtonSegment(value: DecisionPeriod.day, label: Text('日')),
+              ButtonSegment(value: DecisionPeriod.day, label: Text('週')),
               ButtonSegment(value: DecisionPeriod.month, label: Text('月')),
               ButtonSegment(value: DecisionPeriod.year, label: Text('年')),
             ],
             selected: {period},
             onSelectionChanged: (selected) => onPeriodChanged(selected.first),
           ),
+          const SizedBox(height: 16),
+          Text(rangeLabel, style: Theme.of(context).textTheme.titleLarge),
           const SizedBox(height: 16),
           if (!counts.hasDecisions)
             const Padding(
@@ -104,7 +110,12 @@ class _GraphBody extends StatelessWidget {
             )
           else ...[
             Text(
-              'はい $yesTotal回 · いいえ $noTotal回',
+              DecisionCounts.formatAverageCounts(
+                period: period,
+                yesTotal: yesTotal,
+                noTotal: noTotal,
+                bucketCount: series.length,
+              ),
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 8),
@@ -178,9 +189,34 @@ class DecisionBarChart extends StatelessWidget {
     });
   }
 
+  /// Right-side gauge ticks: max, 2/3, 1/3, and 0 (deduped, high to low).
+  static List<int> gaugeValues(int maxCount) {
+    if (maxCount <= 0) return const [0];
+    if (maxCount == 1) return const [1, 0];
+    final twoThirds = (maxCount * 2 / 3).round();
+    final oneThird = (maxCount / 3).round();
+    return {maxCount, twoThirds, oneThird, 0}.toList()
+      ..sort((a, b) => b.compareTo(a));
+  }
+
+  static String formatGaugeLabel(int value) {
+    if (value.abs() < 1000) return '$value';
+    final sign = value < 0 ? '-' : '';
+    final digits = value.abs().toString();
+    final buffer = StringBuffer(sign);
+    for (var i = 0; i < digits.length; i++) {
+      if (i > 0 && (digits.length - i) % 3 == 0) {
+        buffer.write(',');
+      }
+      buffer.write(digits[i]);
+    }
+    return buffer.toString();
+  }
+
   @override
   Widget build(BuildContext context) {
     final maxCount = maxStackedCount(series);
+    final fontFamily = Theme.of(context).textTheme.bodyMedium?.fontFamily;
     return Semantics(
       label: series
           .map(
@@ -189,7 +225,11 @@ class DecisionBarChart extends StatelessWidget {
           )
           .join('、'),
       child: CustomPaint(
-        painter: _DecisionBarPainter(series: series, maxCount: maxCount),
+        painter: _DecisionBarPainter(
+          series: series,
+          maxCount: maxCount,
+          fontFamily: fontFamily,
+        ),
         child: const SizedBox.expand(),
       ),
     );
@@ -197,30 +237,76 @@ class DecisionBarChart extends StatelessWidget {
 }
 
 class _DecisionBarPainter extends CustomPainter {
-  _DecisionBarPainter({required this.series, required this.maxCount});
+  _DecisionBarPainter({
+    required this.series,
+    required this.maxCount,
+    this.fontFamily,
+  });
 
   final List<PeriodDecisionCount> series;
   final int maxCount;
+  final String? fontFamily;
 
   @override
   void paint(Canvas canvas, Size size) {
     if (series.isEmpty) return;
     const labelHeight = 22.0;
-    const topPad = 8.0;
+    const topPad = 12.0;
+    const gaugeGap = 8.0;
     final chartHeight = size.height - labelHeight - topPad;
     if (chartHeight <= 0) return;
-    final groupWidth = size.width / series.length;
+
+    final ticks = DecisionBarChart.gaugeValues(maxCount);
+    final gaugePainters = <int, TextPainter>{};
+    var gaugeWidth = 0.0;
+    for (final tick in ticks) {
+      final painter = TextPainter(
+        text: TextSpan(
+          text: DecisionBarChart.formatGaugeLabel(tick),
+          style: TextStyle(
+            color: tick == ticks.first
+                ? const Color(0xFFE5E7EB)
+                : const Color(0xFF9CA3AF),
+            fontSize: 10,
+            fontFamily: fontFamily,
+          ),
+        ),
+        textDirection: TextDirection.ltr,
+      )..layout();
+      gaugePainters[tick] = painter;
+      if (painter.width > gaugeWidth) {
+        gaugeWidth = painter.width;
+      }
+    }
+
+    final chartWidth = (size.width - gaugeWidth - gaugeGap).clamp(0.0, size.width);
+    if (chartWidth <= 0) return;
+    final groupWidth = chartWidth / series.length;
     final barWidth = (groupWidth * 0.45).clamp(6.0, 22.0);
     final baseline = topPad + chartHeight;
     final scale = maxCount == 0 ? 0.0 : chartHeight / maxCount;
     final gridPaint = Paint()
       ..color = const Color(0xFF3F2A2A)
       ..strokeWidth = 1;
-    canvas.drawLine(Offset(0, baseline), Offset(size.width, baseline), gridPaint);
+
+    for (final tick in ticks) {
+      final y = baseline - tick * scale;
+      canvas.drawLine(Offset(0, y), Offset(chartWidth, y), gridPaint);
+      final painter = gaugePainters[tick]!;
+      var labelY = y - painter.height / 2;
+      if (labelY < 0) {
+        labelY = 0;
+      }
+      if (labelY + painter.height > baseline) {
+        labelY = baseline - painter.height;
+      }
+      painter.paint(canvas, Offset(chartWidth + gaugeGap, labelY));
+    }
 
     final labelStyle = TextStyle(
       color: const Color(0xFF9CA3AF),
       fontSize: series.length > 10 ? 10 : 11,
+      fontFamily: fontFamily,
     );
 
     for (var i = 0; i < series.length; i++) {
@@ -295,6 +381,8 @@ class _DecisionBarPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _DecisionBarPainter oldDelegate) {
-    return oldDelegate.series != series || oldDelegate.maxCount != maxCount;
+    return oldDelegate.series != series ||
+        oldDelegate.maxCount != maxCount ||
+        oldDelegate.fontFamily != fontFamily;
   }
 }
