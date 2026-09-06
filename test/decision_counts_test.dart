@@ -180,7 +180,7 @@ void main() {
       expect(DecisionCounts.formatTodayOpenMessage(0), '');
       expect(
         DecisionCounts.formatTodayOpenMessage(3),
-        '今日は3回解除しました',
+        '今日は3回見てしまいました',
       );
       expect(DecisionCounts.formatTodayOpenMessage(-1), '');
     });
