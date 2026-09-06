@@ -41,6 +41,11 @@ void main() {
     );
   });
 
+  test('uses the same look/skip colors as the warning overlay', () {
+    expect(DecisionBarChart.yesColor, const Color(0xFFB91C1C));
+    expect(DecisionBarChart.noColor, const Color(0xFFD1D5DB));
+  });
+
   test('builds right-side gauge ticks from the stacked max', () {
     expect(DecisionBarChart.gaugeValues(0), [0]);
     expect(DecisionBarChart.gaugeValues(1), [1, 0]);
@@ -57,6 +62,8 @@ void main() {
         child: const MaterialApp(home: AppEditScreen(app: _app)),
       ),
     );
+
+    expect(find.text('見る / 見ないの回数を年・月・日で表示します'), findsOneWidget);
 
     await tester.tap(find.text('見てしまった回数'));
     await tester.pumpAndSettle();
@@ -86,7 +93,7 @@ void main() {
 
     expect(find.text('まだ記録がありません'), findsOneWidget);
     expect(find.text('8月31日～9月6日'), findsOneWidget);
-    expect(find.textContaining('はい'), findsNothing);
+    expect(find.textContaining('見る'), findsNothing);
   });
 
   testWidgets('shows week averages and switches to month and year', (tester) async {
@@ -124,18 +131,20 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('8月31日～9月6日'), findsOneWidget);
-    expect(find.text('はい 0.3回 · いいえ 0.1回 (1日平均)'), findsOneWidget);
+    expect(find.text('見る 0.3回 · 見ない 0.1回 (1日平均)'), findsOneWidget);
+    expect(find.text('見る'), findsOneWidget);
+    expect(find.text('見ない'), findsOneWidget);
     expect(find.byType(DecisionBarChart), findsOneWidget);
 
     await tester.tap(find.text('月'));
     await tester.pumpAndSettle();
     expect(find.text('2025年10月～2026年9月'), findsOneWidget);
-    expect(find.text('はい 0.3回 · いいえ 0.3回 (1か月平均)'), findsOneWidget);
+    expect(find.text('見る 0.3回 · 見ない 0.3回 (1か月平均)'), findsOneWidget);
 
     await tester.tap(find.text('年'));
     await tester.pumpAndSettle();
     expect(find.text('2026年'), findsOneWidget);
-    expect(find.text('はい 3回 · いいえ 3回 (1年平均)'), findsOneWidget);
+    expect(find.text('見る 3回 · 見ない 3回 (1年平均)'), findsOneWidget);
   });
 }
 

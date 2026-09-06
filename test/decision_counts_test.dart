@@ -331,7 +331,7 @@ void main() {
       );
     });
 
-    test('formats yes/no averages over the aggregation window', () {
+    test('formats look/skip averages over the aggregation window', () {
       expect(
         DecisionCounts.formatAverageCounts(
           period: DecisionPeriod.day,
@@ -339,7 +339,7 @@ void main() {
           noTotal: 1,
           bucketCount: 7,
         ),
-        'はい 0.3回 · いいえ 0.1回 (1日平均)',
+        '見る 0.3回 · 見ない 0.1回 (1日平均)',
       );
       expect(
         DecisionCounts.formatAverageCounts(
@@ -348,7 +348,7 @@ void main() {
           noTotal: 3,
           bucketCount: 12,
         ),
-        'はい 0.3回 · いいえ 0.3回 (1か月平均)',
+        '見る 0.3回 · 見ない 0.3回 (1か月平均)',
       );
       expect(
         DecisionCounts.formatAverageCounts(
@@ -357,7 +357,7 @@ void main() {
           noTotal: 3,
           bucketCount: 1,
         ),
-        'はい 3回 · いいえ 3回 (1年平均)',
+        '見る 3回 · 見ない 3回 (1年平均)',
       );
     });
 

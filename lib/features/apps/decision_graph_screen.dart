@@ -139,9 +139,9 @@ class _Legend extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Row(
       children: [
-        _LegendSwatch(color: DecisionBarChart.yesColor, label: 'はい'),
+        _LegendSwatch(color: DecisionBarChart.yesColor, label: '見る'),
         SizedBox(width: 16),
-        _LegendSwatch(color: DecisionBarChart.noColor, label: 'いいえ'),
+        _LegendSwatch(color: DecisionBarChart.noColor, label: '見ない'),
       ],
     );
   }
@@ -176,8 +176,11 @@ class _LegendSwatch extends StatelessWidget {
 class DecisionBarChart extends StatelessWidget {
   const DecisionBarChart({super.key, required this.series});
 
+  /// 見る: sin. Keep in sync with WarningOverlay.LOOK_COLOR.
   static const yesColor = Color(0xFFB91C1C);
-  static const noColor = Color(0xFF6B7280);
+
+  /// 見ない: resisted temptation. Keep in sync with WarningOverlay.SKIP_COLOR.
+  static const noColor = Color(0xFFD1D5DB);
 
   final List<PeriodDecisionCount> series;
 
@@ -221,7 +224,7 @@ class DecisionBarChart extends StatelessWidget {
       label: series
           .map(
             (item) =>
-                '${DecisionCounts.formatPeriodLabel(item.period, item.periodKey)} はい${item.yesCount} いいえ${item.noCount}',
+                '${DecisionCounts.formatPeriodLabel(item.period, item.periodKey)} 見る${item.yesCount} 見ない${item.noCount}',
           )
           .join('、'),
       child: CustomPaint(
