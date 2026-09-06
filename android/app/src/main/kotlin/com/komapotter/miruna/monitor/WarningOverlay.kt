@@ -16,6 +16,14 @@ import android.widget.LinearLayout
 import android.widget.TextView
 
 class WarningOverlay(private val context: Context) {
+    companion object {
+        /** 見る: sin. Keep in sync with DecisionBarChart.yesColor. */
+        val LOOK_COLOR = 0xFFB91C1C.toInt()
+
+        /** 見ない: resisted temptation. Keep in sync with DecisionBarChart.noColor. */
+        val SKIP_COLOR = 0xFFD1D5DB.toInt()
+    }
+
     private val windowManager =
         context.applicationContext.getSystemService(Context.WINDOW_SERVICE) as WindowManager
     private var view: View? = null
@@ -110,7 +118,7 @@ class WarningOverlay(private val context: Context) {
         val todayOpenMessage = DecisionCounts.formatTodayOpenMessage(todayYesCount)
         val message =
             TextView(context).apply {
-                text = "前回の起動から${period}経っていません。本当に開きますか？"
+                text = "前回の起動から${period}経っていません。本当に見ますか？"
                 setTextColor(0xFFC4B8B8.toInt())
                 setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
                 setPadding(0, dp(12), 0, if (todayOpenMessage.isEmpty()) dp(20) else dp(8))
@@ -122,20 +130,21 @@ class WarningOverlay(private val context: Context) {
                 gravity = Gravity.END
             }
 
-        val noButton =
-            Button(context).apply {
-                text = "いいえ"
-                backgroundTintList = ColorStateList.valueOf(0xFFB91C1C.toInt())
-                setTextColor(Color.WHITE)
-                typeface = Typeface.DEFAULT_BOLD
-                setOnClickListener { onNo() }
-            }
         val yesButton =
             Button(context).apply {
-                text = "はい"
-                backgroundTintList = ColorStateList.valueOf(Color.TRANSPARENT)
-                setTextColor(0xFF8A8080.toInt())
+                text = "見る"
+                backgroundTintList = ColorStateList.valueOf(LOOK_COLOR)
+                setTextColor(Color.WHITE)
+                typeface = Typeface.DEFAULT_BOLD
                 setOnClickListener { onYes() }
+            }
+        val noButton =
+            Button(context).apply {
+                text = "見ない"
+                backgroundTintList = ColorStateList.valueOf(SKIP_COLOR)
+                setTextColor(0xFF1A1212.toInt())
+                typeface = Typeface.DEFAULT_BOLD
+                setOnClickListener { onNo() }
             }
 
         val buttonLp =
@@ -144,8 +153,8 @@ class WarningOverlay(private val context: Context) {
                 LinearLayout.LayoutParams.WRAP_CONTENT,
             )
         buttonLp.marginStart = dp(8)
-        buttons.addView(noButton, buttonLp)
         buttons.addView(yesButton, buttonLp)
+        buttons.addView(noButton, buttonLp)
 
         card.addView(title)
         card.addView(message)

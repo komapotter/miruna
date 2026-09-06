@@ -295,7 +295,7 @@ class DecisionCounts {
     }
     final yes = bucketCount == 0 ? 0.0 : yesTotal / bucketCount;
     final no = bucketCount == 0 ? 0.0 : noTotal / bucketCount;
-    return 'はい ${_formatAverage(yes)}回 · いいえ ${_formatAverage(no)}回 ($unit)';
+    return '見る ${_formatAverage(yes)}回 · 見ない ${_formatAverage(no)}回 ($unit)';
   }
 
   static String _formatAverage(double value) {
