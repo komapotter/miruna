@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2026.906.1](https://github.com/komapotter/miruna/compare/v2026.906.0...v2026.906.1) - 2026-09-06
+
+### Other Changes
+- 週グラフの集計期間と右側ゲージを追加する by @komapotter in https://github.com/komapotter/miruna/pull/33
+
 ## [v2026.906.0](https://github.com/komapotter/miruna/compare/v2026.905.1...v2026.906.0) - 2026-09-06
 
 ### Other Changes
