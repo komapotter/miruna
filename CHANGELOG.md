@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2026.906.4](https://github.com/komapotter/miruna/compare/v2026.906.3...v2026.906.4) - 2026-09-06
+
+### Other Changes
+- 警告ダイアログの回数を「見てしまいました」と表示する by @komapotter in https://github.com/komapotter/miruna/pull/39
+
 ## [v2026.906.3](https://github.com/komapotter/miruna/compare/v2026.906.2...v2026.906.3) - 2026-09-06
 
 ### Other Changes
