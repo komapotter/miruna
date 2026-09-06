@@ -185,7 +185,7 @@ void main() {
       expect(DecisionCounts.formatTodayOpenMessage(-1), '');
     });
 
-    test('builds a 14-day chart series with empty buckets filled', () {
+    test('builds a Monday-Sunday week chart series with empty buckets filled', () {
       expect(
         counts
             .chartSeries(
@@ -196,22 +196,13 @@ void main() {
             .map((item) => (item.periodKey, item.yesCount, item.noCount))
             .toList(),
         [
-          for (var i = 0; i < 14; i++)
-            (
-              DecisionCounts.localDateKey(DateTime(2026, 8, 23 + i)),
-              DateTime(2026, 8, 23 + i).day == 31
-                  ? 1
-                  : DateTime(2026, 8, 23 + i).month == 9 &&
-                        DateTime(2026, 8, 23 + i).day == 5
-                  ? 2
-                  : 0,
-              DateTime(2026, 8, 23 + i).day == 31
-                  ? 2
-                  : DateTime(2026, 8, 23 + i).month == 9 &&
-                        DateTime(2026, 8, 23 + i).day == 5
-                  ? 1
-                  : 0,
-            ),
+          ('2026-08-31', 1, 2),
+          ('2026-09-01', 0, 0),
+          ('2026-09-02', 0, 0),
+          ('2026-09-03', 0, 0),
+          ('2026-09-04', 0, 0),
+          ('2026-09-05', 2, 1),
+          ('2026-09-06', 0, 0),
         ],
       );
     });
@@ -290,7 +281,11 @@ void main() {
     test('formats chart axis labels', () {
       expect(
         DecisionCounts.formatPeriodLabel(DecisionPeriod.day, '2026-09-05'),
-        '9/5',
+        '土',
+      );
+      expect(
+        DecisionCounts.formatWeekdayLabel('2026-08-31'),
+        '月',
       );
       expect(
         DecisionCounts.formatPeriodLabel(DecisionPeriod.month, '2026-09'),
@@ -299,6 +294,40 @@ void main() {
       expect(
         DecisionCounts.formatPeriodLabel(DecisionPeriod.year, '2026'),
         '2026',
+      );
+    });
+
+    test('formats the aggregation range for the visible chart window', () {
+      expect(
+        DecisionCounts.formatAggregationRange(
+          period: DecisionPeriod.day,
+          periodKeys: DecisionCounts.chartPeriodKeys(
+            period: DecisionPeriod.day,
+            now: day,
+          ),
+        ),
+        '8月31日～9月6日',
+      );
+      expect(
+        DecisionCounts.formatAggregationRange(
+          period: DecisionPeriod.day,
+          periodKeys: const ['2025-12-29', '2026-01-04'],
+        ),
+        '2025年12月29日～2026年1月4日',
+      );
+      expect(
+        DecisionCounts.formatAggregationRange(
+          period: DecisionPeriod.month,
+          periodKeys: const ['2025-10', '2026-09'],
+        ),
+        '2025年10月～2026年9月',
+      );
+      expect(
+        DecisionCounts.formatAggregationRange(
+          period: DecisionPeriod.year,
+          periodKeys: const ['2026'],
+        ),
+        '2026年',
       );
     });
 

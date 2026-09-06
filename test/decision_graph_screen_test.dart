@@ -41,6 +41,13 @@ void main() {
     );
   });
 
+  test('builds right-side gauge ticks from the stacked max', () {
+    expect(DecisionBarChart.gaugeValues(0), [0]);
+    expect(DecisionBarChart.gaugeValues(1), [1, 0]);
+    expect(DecisionBarChart.gaugeValues(7), [7, 5, 2, 0]);
+    expect(DecisionBarChart.formatGaugeLabel(12896), '12,896');
+  });
+
   testWidgets('opens the graph from the app edit screen', (tester) async {
     await tester.pumpWidget(
       ProviderScope(
@@ -55,7 +62,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Instagramの記録'), findsOneWidget);
-    expect(find.text('日'), findsOneWidget);
+    expect(find.text('週'), findsOneWidget);
     expect(find.text('月'), findsOneWidget);
     expect(find.text('年'), findsOneWidget);
   });
@@ -78,10 +85,11 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('まだ記録がありません'), findsOneWidget);
+    expect(find.text('8月31日～9月6日'), findsOneWidget);
     expect(find.textContaining('はい'), findsNothing);
   });
 
-  testWidgets('shows day totals and switches to month and year', (tester) async {
+  testWidgets('shows week totals and switches to month and year', (tester) async {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
@@ -115,15 +123,18 @@ void main() {
     );
     await tester.pumpAndSettle();
 
+    expect(find.text('8月31日～9月6日'), findsOneWidget);
     expect(find.text('はい 2回 · いいえ 1回'), findsOneWidget);
     expect(find.byType(DecisionBarChart), findsOneWidget);
 
     await tester.tap(find.text('月'));
     await tester.pumpAndSettle();
+    expect(find.text('2025年10月～2026年9月'), findsOneWidget);
     expect(find.text('はい 3回 · いいえ 3回'), findsOneWidget);
 
     await tester.tap(find.text('年'));
     await tester.pumpAndSettle();
+    expect(find.text('2026年'), findsOneWidget);
     expect(find.text('はい 3回 · いいえ 3回'), findsOneWidget);
   });
 }
