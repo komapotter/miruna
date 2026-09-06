@@ -211,6 +211,7 @@ class DecisionBarChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final maxCount = maxStackedCount(series);
+    final fontFamily = Theme.of(context).textTheme.bodyMedium?.fontFamily;
     return Semantics(
       label: series
           .map(
@@ -219,7 +220,11 @@ class DecisionBarChart extends StatelessWidget {
           )
           .join('、'),
       child: CustomPaint(
-        painter: _DecisionBarPainter(series: series, maxCount: maxCount),
+        painter: _DecisionBarPainter(
+          series: series,
+          maxCount: maxCount,
+          fontFamily: fontFamily,
+        ),
         child: const SizedBox.expand(),
       ),
     );
@@ -227,10 +232,15 @@ class DecisionBarChart extends StatelessWidget {
 }
 
 class _DecisionBarPainter extends CustomPainter {
-  _DecisionBarPainter({required this.series, required this.maxCount});
+  _DecisionBarPainter({
+    required this.series,
+    required this.maxCount,
+    this.fontFamily,
+  });
 
   final List<PeriodDecisionCount> series;
   final int maxCount;
+  final String? fontFamily;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -253,6 +263,7 @@ class _DecisionBarPainter extends CustomPainter {
                 ? const Color(0xFFE5E7EB)
                 : const Color(0xFF9CA3AF),
             fontSize: 10,
+            fontFamily: fontFamily,
           ),
         ),
         textDirection: TextDirection.ltr,
@@ -290,6 +301,7 @@ class _DecisionBarPainter extends CustomPainter {
     final labelStyle = TextStyle(
       color: const Color(0xFF9CA3AF),
       fontSize: series.length > 10 ? 10 : 11,
+      fontFamily: fontFamily,
     );
 
     for (var i = 0; i < series.length; i++) {
@@ -364,6 +376,8 @@ class _DecisionBarPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _DecisionBarPainter oldDelegate) {
-    return oldDelegate.series != series || oldDelegate.maxCount != maxCount;
+    return oldDelegate.series != series ||
+        oldDelegate.maxCount != maxCount ||
+        oldDelegate.fontFamily != fontFamily;
   }
 }
