@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2026.906.2](https://github.com/komapotter/miruna/compare/v2026.906.1...v2026.906.2) - 2026-09-06
+
+### Other Changes
+- ランチャーアイコンを添付の「别看」デザインに差し替える by @komapotter in https://github.com/komapotter/miruna/pull/35
+
 ## [v2026.906.1](https://github.com/komapotter/miruna/compare/v2026.906.0...v2026.906.1) - 2026-09-06
 
 ### Other Changes
