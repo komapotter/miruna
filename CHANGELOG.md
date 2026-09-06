@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2026.906.0](https://github.com/komapotter/miruna/compare/v2026.905.1...v2026.906.0) - 2026-09-06
+
+### Other Changes
+- はい/いいえグラフを積み上げ棒グラフに変更 by @komapotter in https://github.com/komapotter/miruna/pull/30
+- ダークホラーの配色と、血走ったランチャーアイコン by @komapotter in https://github.com/komapotter/miruna/pull/31
+
 ## [v2026.905.1](https://github.com/komapotter/miruna/compare/v2026.905.0...v2026.905.1) - 2026-09-05
 
 ### Other Changes
