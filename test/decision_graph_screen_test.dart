@@ -89,7 +89,7 @@ void main() {
     expect(find.textContaining('はい'), findsNothing);
   });
 
-  testWidgets('shows week totals and switches to month and year', (tester) async {
+  testWidgets('shows week averages and switches to month and year', (tester) async {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
@@ -124,18 +124,18 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('8月31日～9月6日'), findsOneWidget);
-    expect(find.text('はい 2回 · いいえ 1回'), findsOneWidget);
+    expect(find.text('はい 0.3回 · いいえ 0.1回 (1日平均)'), findsOneWidget);
     expect(find.byType(DecisionBarChart), findsOneWidget);
 
     await tester.tap(find.text('月'));
     await tester.pumpAndSettle();
     expect(find.text('2025年10月～2026年9月'), findsOneWidget);
-    expect(find.text('はい 3回 · いいえ 3回'), findsOneWidget);
+    expect(find.text('はい 0.3回 · いいえ 0.3回 (1か月平均)'), findsOneWidget);
 
     await tester.tap(find.text('年'));
     await tester.pumpAndSettle();
     expect(find.text('2026年'), findsOneWidget);
-    expect(find.text('はい 3回 · いいえ 3回'), findsOneWidget);
+    expect(find.text('はい 3回 · いいえ 3回 (1年平均)'), findsOneWidget);
   });
 }
 

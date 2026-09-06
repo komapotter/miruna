@@ -110,7 +110,12 @@ class _GraphBody extends StatelessWidget {
             )
           else ...[
             Text(
-              'はい $yesTotal回 · いいえ $noTotal回',
+              DecisionCounts.formatAverageCounts(
+                period: period,
+                yesTotal: yesTotal,
+                noTotal: noTotal,
+                bucketCount: series.length,
+              ),
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 8),

@@ -277,6 +277,35 @@ class DecisionCounts {
     }
   }
 
+  /// Per-bucket average over the visible chart window.
+  static String formatAverageCounts({
+    required DecisionPeriod period,
+    required int yesTotal,
+    required int noTotal,
+    required int bucketCount,
+  }) {
+    late final String unit;
+    switch (period) {
+      case DecisionPeriod.day:
+        unit = '1日平均';
+      case DecisionPeriod.month:
+        unit = '1か月平均';
+      case DecisionPeriod.year:
+        unit = '1年平均';
+    }
+    final yes = bucketCount == 0 ? 0.0 : yesTotal / bucketCount;
+    final no = bucketCount == 0 ? 0.0 : noTotal / bucketCount;
+    return 'はい ${_formatAverage(yes)}回 · いいえ ${_formatAverage(no)}回 ($unit)';
+  }
+
+  static String _formatAverage(double value) {
+    final tenths = (value * 10).round() / 10;
+    if (tenths == tenths.roundToDouble()) {
+      return '${tenths.toInt()}';
+    }
+    return tenths.toStringAsFixed(1);
+  }
+
   static String _formatMonthDay(String dateKey, {required bool includeYear}) {
     if (dateKey.length < 10) return dateKey;
     final month = int.parse(dateKey.substring(5, 7));

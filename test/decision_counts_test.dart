@@ -331,6 +331,36 @@ void main() {
       );
     });
 
+    test('formats yes/no averages over the aggregation window', () {
+      expect(
+        DecisionCounts.formatAverageCounts(
+          period: DecisionPeriod.day,
+          yesTotal: 2,
+          noTotal: 1,
+          bucketCount: 7,
+        ),
+        'はい 0.3回 · いいえ 0.1回 (1日平均)',
+      );
+      expect(
+        DecisionCounts.formatAverageCounts(
+          period: DecisionPeriod.month,
+          yesTotal: 3,
+          noTotal: 3,
+          bucketCount: 12,
+        ),
+        'はい 0.3回 · いいえ 0.3回 (1か月平均)',
+      );
+      expect(
+        DecisionCounts.formatAverageCounts(
+          period: DecisionPeriod.year,
+          yesTotal: 3,
+          noTotal: 3,
+          bucketCount: 1,
+        ),
+        'はい 3回 · いいえ 3回 (1年平均)',
+      );
+    });
+
     test('maps channel payloads', () {
       expect(
         DecisionCounts.fromChannelList([
