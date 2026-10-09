@@ -19,3 +19,4 @@ CI ジョブでは次を実行します。
 - `flutter analyze`
 - `flutter test`
 - `flutter build apk --debug`
+- `cd android && ./gradlew :app:testDebugUnitTest`（debug APK ビルド後。`gradlew` は gitignore のためビルドで生成される）
