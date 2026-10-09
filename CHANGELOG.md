@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2026.1009.0](https://github.com/komapotter/miruna/compare/v2026.906.4...v2026.1009.0) - 2026-10-09
+
+### Other Changes
+- 警告オーバーレイの「見る」を8回押さないと解除できないようにする (#41) by @komapotter in https://github.com/komapotter/miruna/pull/42
+
 ## [v2026.906.4](https://github.com/komapotter/miruna/compare/v2026.906.3...v2026.906.4) - 2026-09-06
 
 ### Other Changes
