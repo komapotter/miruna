@@ -130,13 +130,20 @@ class WarningOverlay(private val context: Context) {
                 gravity = Gravity.END
             }
 
+        val lookGate = LookTapGate()
         val yesButton =
             Button(context).apply {
-                text = "見る"
+                text = lookGate.lookButtonLabel()
                 backgroundTintList = ColorStateList.valueOf(LOOK_COLOR)
                 setTextColor(Color.WHITE)
                 typeface = Typeface.DEFAULT_BOLD
-                setOnClickListener { onYes() }
+                setOnClickListener {
+                    if (lookGate.registerLookTap()) {
+                        onYes()
+                    } else {
+                        text = lookGate.lookButtonLabel()
+                    }
+                }
             }
         val noButton =
             Button(context).apply {
