@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2026.1009.1](https://github.com/komapotter/miruna/compare/v2026.1009.0...v2026.1009.1) - 2026-10-09
+
+### Other Changes
+- tagpr の setup-android を v4.0.4 に揃える by @komapotter in https://github.com/komapotter/miruna/pull/44
+
 ## [v2026.1009.0](https://github.com/komapotter/miruna/compare/v2026.906.4...v2026.1009.0) - 2026-10-09
 
 ### Other Changes
