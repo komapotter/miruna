@@ -113,7 +113,7 @@ void main() {
           lastClosedAt: now.subtract(const Duration(minutes: 1)),
           warningPeriod: const Duration(hours: 1),
           now: now,
-          unlockedUntil: now.add(const Duration(minutes: 14)),
+          unlockedUntil: now.add(const Duration(minutes: 4)),
         ),
         CooldownAction.allow,
       );
@@ -165,9 +165,9 @@ void main() {
       expect(
         Cooldown.unlockedUntil(
           now: now,
-          cooldownPeriod: const Duration(minutes: 15),
+          cooldownPeriod: const Duration(minutes: 5),
         ),
-        now.add(const Duration(minutes: 15)),
+        now.add(const Duration(minutes: 5)),
       );
     });
   });
@@ -209,6 +209,18 @@ void main() {
         Cooldown.shouldRecordClose(unconfirmedWarning: false),
         isTrue,
       );
+    });
+  });
+
+  group('unlock cooldown options', () {
+    test('defaults new apps to five minutes with short presets', () {
+      expect(Cooldown.defaultCooldownPeriod, const Duration(minutes: 5));
+      expect(Cooldown.cooldownPresets, const [
+        Duration.zero,
+        Duration(minutes: 3),
+        Duration(minutes: 5),
+        Duration(minutes: 10),
+      ]);
     });
   });
 

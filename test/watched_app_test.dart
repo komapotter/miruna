@@ -7,14 +7,14 @@ void main() {
       packageName: 'com.instagram.android',
       displayName: 'Instagram',
       warningPeriod: Duration(hours: 1),
-      cooldownPeriod: Duration(minutes: 15),
+      cooldownPeriod: Duration(minutes: 5),
     );
 
     expect(app.toChannelMap(), {
       'packageName': 'com.instagram.android',
       'displayName': 'Instagram',
       'warningPeriodMs': 3600000,
-      'cooldownPeriodMs': 900000,
+      'cooldownPeriodMs': 300000,
       'enabled': true,
     });
   });
@@ -37,14 +37,14 @@ void main() {
       'packageName': 'com.instagram.android',
       'displayName': 'Instagram',
       'warningPeriodMs': 3600000,
-      'cooldownPeriodMs': 900000,
+      'cooldownPeriodMs': 300000,
       'enabled': true,
       'lastClosedAtMs': 1000,
       'sessionAllowed': false,
       'unlockedUntilMs': 2000,
     });
 
-    expect(app.cooldownPeriod, const Duration(minutes: 15));
+    expect(app.cooldownPeriod, const Duration(minutes: 5));
     expect(
       app.unlockedUntil,
       DateTime.fromMillisecondsSinceEpoch(2000),

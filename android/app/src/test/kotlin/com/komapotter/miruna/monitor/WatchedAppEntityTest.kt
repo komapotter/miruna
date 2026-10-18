@@ -40,7 +40,7 @@ class WatchedAppEntityTest {
                 enabled = true,
                 lastClosedAtMs = 1_000L,
                 sessionAllowed = false,
-                cooldownPeriodMs = 900_000L,
+                cooldownPeriodMs = 300_000L,
                 unlockedUntilMs = 2_000L,
             )
 
@@ -61,7 +61,7 @@ class WatchedAppEntityTest {
                   "enabled": true,
                   "lastClosedAtMs": null,
                   "sessionAllowed": false,
-                  "cooldownPeriodMs": 900000,
+                  "cooldownPeriodMs": 300000,
                   "unlockedUntilMs": null
                 }
                 """.trimIndent(),
@@ -69,7 +69,7 @@ class WatchedAppEntityTest {
 
         val app = WatchedAppEntity.fromJson(obj)
 
-        assertEquals(900_000L, app.cooldownPeriodMs)
+        assertEquals(300_000L, app.cooldownPeriodMs)
         assertNull(app.unlockedUntilMs)
         assertNull(app.lastClosedAtMs)
     }

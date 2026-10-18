@@ -11,7 +11,7 @@ class Cooldown {
   const Cooldown._();
 
   static const defaultPeriod = Duration(hours: 1);
-  static const defaultCooldownPeriod = Duration(minutes: 15);
+  static const defaultCooldownPeriod = Duration(minutes: 5);
   static const closeGrace = Duration(seconds: 3);
 
   static const presets = <Duration>[
@@ -26,11 +26,9 @@ class Cooldown {
   /// Unlock cooldown presets. [Duration.zero] disables the cooldown.
   static const cooldownPresets = <Duration>[
     Duration.zero,
-    Duration(minutes: 15),
-    Duration(minutes: 30),
-    Duration(hours: 1),
-    Duration(hours: 3),
-    Duration(hours: 6),
+    Duration(minutes: 3),
+    Duration(minutes: 5),
+    Duration(minutes: 10),
   ];
 
   static CooldownAction decide({

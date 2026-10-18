@@ -19,7 +19,7 @@ class CooldownTest {
                 lastClosedAtMs = now - minuteMs,
                 warningPeriodMs = hourMs,
                 nowMs = now,
-                unlockedUntilMs = now + 14 * minuteMs,
+                unlockedUntilMs = now + 4 * minuteMs,
             )
         assertEquals(Cooldown.ACTION_ALLOW, action)
     }
@@ -76,6 +76,6 @@ class CooldownTest {
 
     @Test
     fun unlockedUntilMsCountsFromUnlockTime() {
-        assertEquals(now + 15 * minuteMs, Cooldown.unlockedUntilMs(now, 15 * minuteMs))
+        assertEquals(now + 5 * minuteMs, Cooldown.unlockedUntilMs(now, 5 * minuteMs))
     }
 }
