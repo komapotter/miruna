@@ -72,6 +72,8 @@ class MonitorChannel(
                             (call.argument<Number>("warningPeriodMs") ?: Cooldown.DEFAULT_PERIOD_MS)
                                 .toLong(),
                         enabled = call.argument<Boolean>("enabled") ?: true,
+                        cooldownPeriodMs =
+                            (call.argument<Number>("cooldownPeriodMs") ?: 0L).toLong(),
                     )
                     result.success(null)
                 }
@@ -132,4 +134,6 @@ private fun WatchedAppEntity.toMap(): Map<String, Any?> =
         "enabled" to enabled,
         "lastClosedAtMs" to lastClosedAtMs,
         "sessionAllowed" to sessionAllowed,
+        "cooldownPeriodMs" to cooldownPeriodMs,
+        "unlockedUntilMs" to unlockedUntilMs,
     )

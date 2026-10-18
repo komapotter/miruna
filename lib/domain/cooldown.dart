@@ -11,6 +11,7 @@ class Cooldown {
   const Cooldown._();
 
   static const defaultPeriod = Duration(hours: 1);
+  static const defaultCooldownPeriod = Duration(minutes: 5);
   static const closeGrace = Duration(seconds: 3);
 
   static const presets = <Duration>[
@@ -22,6 +23,14 @@ class Cooldown {
     Duration(hours: 24),
   ];
 
+  /// Unlock cooldown presets. [Duration.zero] disables the cooldown.
+  static const cooldownPresets = <Duration>[
+    Duration.zero,
+    Duration(minutes: 3),
+    Duration(minutes: 5),
+    Duration(minutes: 10),
+  ];
+
   static CooldownAction decide({
     required bool watched,
     required bool enabled,
@@ -29,11 +38,15 @@ class Cooldown {
     required DateTime? lastClosedAt,
     required Duration warningPeriod,
     required DateTime now,
+    DateTime? unlockedUntil,
   }) {
     if (!watched || !enabled) {
       return CooldownAction.allow;
     }
     if (sessionAllowed) {
+      return CooldownAction.allow;
+    }
+    if (unlockedUntil != null && now.isBefore(unlockedUntil)) {
       return CooldownAction.allow;
     }
     if (lastClosedAt == null) {
@@ -43,6 +56,16 @@ class Cooldown {
       return CooldownAction.warn;
     }
     return CooldownAction.allow;
+  }
+
+  static DateTime? unlockedUntil({
+    required DateTime now,
+    required Duration cooldownPeriod,
+  }) {
+    if (cooldownPeriod <= Duration.zero) {
+      return null;
+    }
+    return now.add(cooldownPeriod);
   }
 
   static Duration? remainingCooldown({

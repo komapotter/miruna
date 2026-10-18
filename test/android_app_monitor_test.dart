@@ -1,6 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:miruna/domain/decision_counts.dart';
+import 'package:miruna/domain/watched_app.dart';
 import 'package:miruna/platform/android_app_monitor.dart';
 
 void main() {
@@ -49,6 +50,59 @@ void main() {
         yesCount: 2,
         noCount: 1,
       ),
+    );
+  });
+
+  test('upserts cooldownPeriodMs with the watched app config', () async {
+    late MethodCall received;
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(channel, (call) async {
+          received = call;
+          return null;
+        });
+
+    final monitor = AndroidAppMonitor(channel: channel);
+    await monitor.upsertWatchedApp(
+      const WatchedApp(
+        packageName: 'com.instagram.android',
+        displayName: 'Instagram',
+        warningPeriod: Duration(hours: 1),
+        cooldownPeriod: Duration(minutes: 5),
+      ),
+    );
+
+    expect(received.method, 'upsertWatchedApp');
+    expect(received.arguments, {
+      'packageName': 'com.instagram.android',
+      'displayName': 'Instagram',
+      'warningPeriodMs': 3600000,
+      'cooldownPeriodMs': 300000,
+      'enabled': true,
+    });
+  });
+
+  test('maps cooldown fields from getWatchedApps', () async {
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(channel, (call) async {
+          return [
+            {
+              'packageName': 'com.instagram.android',
+              'displayName': 'Instagram',
+              'warningPeriodMs': 3600000,
+              'cooldownPeriodMs': 300000,
+              'enabled': true,
+              'unlockedUntilMs': 2000,
+            },
+          ];
+        });
+
+    final monitor = AndroidAppMonitor(channel: channel);
+    final apps = await monitor.getWatchedApps();
+
+    expect(apps.single.cooldownPeriod, const Duration(minutes: 5));
+    expect(
+      apps.single.unlockedUntil,
+      DateTime.fromMillisecondsSinceEpoch(2000),
     );
   });
 }

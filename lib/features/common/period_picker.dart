@@ -7,14 +7,18 @@ class PeriodPicker extends StatelessWidget {
     super.key,
     required this.value,
     required this.onChanged,
+    this.presets = Cooldown.presets,
+    this.dialogTitle = '警告期間',
   });
 
   final Duration value;
   final ValueChanged<Duration> onChanged;
+  final List<Duration> presets;
+  final String dialogTitle;
 
   @override
   Widget build(BuildContext context) {
-    final isPreset = Cooldown.presets.contains(value);
+    final isPreset = presets.contains(value);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -22,7 +26,7 @@ class PeriodPicker extends StatelessWidget {
           spacing: 8,
           runSpacing: 8,
           children: [
-            for (final preset in Cooldown.presets)
+            for (final preset in presets)
               ChoiceChip(
                 label: Text(formatWarningPeriod(preset)),
                 selected: value == preset,
@@ -52,7 +56,7 @@ class PeriodPicker extends StatelessWidget {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('警告期間'),
+          title: Text(dialogTitle),
           content: Row(
             children: [
               Expanded(

@@ -103,6 +103,73 @@ void main() {
         CooldownAction.warn,
       );
     });
+
+    test('allows reopen while unlock cooldown is active', () {
+      expect(
+        Cooldown.decide(
+          watched: true,
+          enabled: true,
+          sessionAllowed: false,
+          lastClosedAt: now.subtract(const Duration(minutes: 1)),
+          warningPeriod: const Duration(hours: 1),
+          now: now,
+          unlockedUntil: now.add(const Duration(minutes: 4)),
+        ),
+        CooldownAction.allow,
+      );
+    });
+
+    test('uses warning period after unlock cooldown expires', () {
+      expect(
+        Cooldown.decide(
+          watched: true,
+          enabled: true,
+          sessionAllowed: false,
+          lastClosedAt: now.subtract(const Duration(minutes: 20)),
+          warningPeriod: const Duration(hours: 1),
+          now: now,
+          unlockedUntil: now.subtract(const Duration(minutes: 1)),
+        ),
+        CooldownAction.warn,
+      );
+    });
+
+    test('keeps old behaviour when cooldown is disabled', () {
+      expect(
+        Cooldown.decide(
+          watched: true,
+          enabled: true,
+          sessionAllowed: false,
+          lastClosedAt: now.subtract(const Duration(minutes: 5)),
+          warningPeriod: const Duration(hours: 1),
+          now: now,
+          unlockedUntil: null,
+        ),
+        CooldownAction.warn,
+      );
+    });
+  });
+
+  group('Cooldown.unlockedUntil', () {
+    test('is null when cooldown is disabled', () {
+      expect(
+        Cooldown.unlockedUntil(
+          now: now,
+          cooldownPeriod: Duration.zero,
+        ),
+        isNull,
+      );
+    });
+
+    test('counts from the unlock time', () {
+      expect(
+        Cooldown.unlockedUntil(
+          now: now,
+          cooldownPeriod: const Duration(minutes: 5),
+        ),
+        now.add(const Duration(minutes: 5)),
+      );
+    });
   });
 
   group('Cooldown.remainingCooldown', () {
@@ -145,6 +212,18 @@ void main() {
     });
   });
 
+  group('unlock cooldown options', () {
+    test('defaults new apps to five minutes with short presets', () {
+      expect(Cooldown.defaultCooldownPeriod, const Duration(minutes: 5));
+      expect(Cooldown.cooldownPresets, const [
+        Duration.zero,
+        Duration(minutes: 3),
+        Duration(minutes: 5),
+        Duration(minutes: 10),
+      ]);
+    });
+  });
+
   group('formatWarningPeriod', () {
     test('formats hours and minutes', () {
       expect(formatWarningPeriod(const Duration(hours: 1)), '1時間');
@@ -154,6 +233,7 @@ void main() {
         formatWarningPeriod(const Duration(hours: 1, minutes: 15)),
         '1時間15分',
       );
+      expect(formatWarningPeriod(Duration.zero), 'なし');
     });
   });
 }
