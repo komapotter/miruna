@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2026.1018.0](https://github.com/komapotter/miruna/compare/v2026.1009.1...v2026.1018.0) - 2026-10-18
+
+### Other Changes
+- ロック解除後にクールダウン期間を設ける by @komapotter in https://github.com/komapotter/miruna/pull/47
+
 ## [v2026.1009.1](https://github.com/komapotter/miruna/compare/v2026.1009.0...v2026.1009.1) - 2026-10-09
 
 ### Other Changes
