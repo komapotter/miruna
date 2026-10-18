@@ -22,12 +22,14 @@ void main() {
         packageName: 'com.slack',
         displayName: 'Slack',
         warningPeriod: Duration(hours: 1),
+        cooldownPeriod: Duration(minutes: 15),
       ),
     );
     final apps = await monitor.getWatchedApps();
     expect(apps, hasLength(1));
     expect(apps.single.packageName, 'com.slack');
     expect(apps.single.warningPeriod, const Duration(hours: 1));
+    expect(apps.single.cooldownPeriod, const Duration(minutes: 15));
     expect((await monitor.getDecisionCounts()).entries, isEmpty);
   });
 }

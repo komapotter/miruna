@@ -37,6 +37,7 @@ class MonitorEngine private constructor(context: Context) {
                 lastClosedAtMs = app.lastClosedAtMs,
                 warningPeriodMs = app.warningPeriodMs,
                 nowMs = System.currentTimeMillis(),
+                unlockedUntilMs = app.unlockedUntilMs,
             )
         if (action == Cooldown.ACTION_WARN) {
             unconfirmedWarnings.add(packageName)
@@ -63,7 +64,7 @@ class MonitorEngine private constructor(context: Context) {
     private fun confirmOpen(packageName: String) {
         unconfirmedWarnings.remove(packageName)
         store.recordDecision(packageName, yes = true)
-        store.setSessionAllowed(packageName, true)
+        store.confirmUnlock(packageName, System.currentTimeMillis())
         overlay.dismiss()
     }
 

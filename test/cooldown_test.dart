@@ -103,6 +103,73 @@ void main() {
         CooldownAction.warn,
       );
     });
+
+    test('allows reopen while unlock cooldown is active', () {
+      expect(
+        Cooldown.decide(
+          watched: true,
+          enabled: true,
+          sessionAllowed: false,
+          lastClosedAt: now.subtract(const Duration(minutes: 1)),
+          warningPeriod: const Duration(hours: 1),
+          now: now,
+          unlockedUntil: now.add(const Duration(minutes: 14)),
+        ),
+        CooldownAction.allow,
+      );
+    });
+
+    test('uses warning period after unlock cooldown expires', () {
+      expect(
+        Cooldown.decide(
+          watched: true,
+          enabled: true,
+          sessionAllowed: false,
+          lastClosedAt: now.subtract(const Duration(minutes: 20)),
+          warningPeriod: const Duration(hours: 1),
+          now: now,
+          unlockedUntil: now.subtract(const Duration(minutes: 1)),
+        ),
+        CooldownAction.warn,
+      );
+    });
+
+    test('keeps old behaviour when cooldown is disabled', () {
+      expect(
+        Cooldown.decide(
+          watched: true,
+          enabled: true,
+          sessionAllowed: false,
+          lastClosedAt: now.subtract(const Duration(minutes: 5)),
+          warningPeriod: const Duration(hours: 1),
+          now: now,
+          unlockedUntil: null,
+        ),
+        CooldownAction.warn,
+      );
+    });
+  });
+
+  group('Cooldown.unlockedUntil', () {
+    test('is null when cooldown is disabled', () {
+      expect(
+        Cooldown.unlockedUntil(
+          now: now,
+          cooldownPeriod: Duration.zero,
+        ),
+        isNull,
+      );
+    });
+
+    test('counts from the unlock time', () {
+      expect(
+        Cooldown.unlockedUntil(
+          now: now,
+          cooldownPeriod: const Duration(minutes: 15),
+        ),
+        now.add(const Duration(minutes: 15)),
+      );
+    });
   });
 
   group('Cooldown.remainingCooldown', () {
@@ -154,6 +221,7 @@ void main() {
         formatWarningPeriod(const Duration(hours: 1, minutes: 15)),
         '1時間15分',
       );
+      expect(formatWarningPeriod(Duration.zero), 'なし');
     });
   });
 }

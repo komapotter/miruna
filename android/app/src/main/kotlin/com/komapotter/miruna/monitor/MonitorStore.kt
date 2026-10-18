@@ -26,6 +26,7 @@ class MonitorStore(context: Context) {
         displayName: String,
         warningPeriodMs: Long,
         enabled: Boolean,
+        cooldownPeriodMs: Long = 0L,
     ) {
         val current = getApps().toMutableList()
         val index = current.indexOfFirst { it.packageName == packageName }
@@ -35,6 +36,7 @@ class MonitorStore(context: Context) {
                     displayName = displayName,
                     warningPeriodMs = warningPeriodMs,
                     enabled = enabled,
+                    cooldownPeriodMs = cooldownPeriodMs,
                 )
             } else {
                 WatchedAppEntity(
@@ -44,6 +46,8 @@ class MonitorStore(context: Context) {
                     enabled = enabled,
                     lastClosedAtMs = null,
                     sessionAllowed = false,
+                    cooldownPeriodMs = cooldownPeriodMs,
+                    unlockedUntilMs = null,
                 )
             }
         if (index >= 0) {
@@ -64,6 +68,15 @@ class MonitorStore(context: Context) {
 
     fun setSessionAllowed(packageName: String, allowed: Boolean) {
         update(packageName) { it.copy(sessionAllowed = allowed) }
+    }
+
+    fun confirmUnlock(packageName: String, nowMs: Long) {
+        update(packageName) { app ->
+            app.copy(
+                sessionAllowed = true,
+                unlockedUntilMs = Cooldown.unlockedUntilMs(nowMs, app.cooldownPeriodMs),
+            )
+        }
     }
 
     fun getDefaultWarningPeriodMs(): Long =
@@ -140,36 +153,11 @@ class MonitorStore(context: Context) {
 
     private fun saveApps(apps: List<WatchedAppEntity>) {
         val array = JSONArray()
-        apps.forEach { array.put(toJson(it)) }
+        apps.forEach { array.put(it.toJson()) }
         prefs.edit().putString(KEY_APPS, array.toString()).apply()
     }
 
-    private fun toJson(app: WatchedAppEntity): JSONObject =
-        JSONObject().apply {
-            put("packageName", app.packageName)
-            put("displayName", app.displayName)
-            put("warningPeriodMs", app.warningPeriodMs)
-            put("enabled", app.enabled)
-            if (app.lastClosedAtMs != null) {
-                put("lastClosedAtMs", app.lastClosedAtMs)
-            } else {
-                put("lastClosedAtMs", JSONObject.NULL)
-            }
-            put("sessionAllowed", app.sessionAllowed)
-        }
-
-    private fun fromJson(obj: JSONObject): WatchedAppEntity {
-        val closed =
-            if (obj.isNull("lastClosedAtMs")) null else obj.optLong("lastClosedAtMs")
-        return WatchedAppEntity(
-            packageName = obj.getString("packageName"),
-            displayName = obj.getString("displayName"),
-            warningPeriodMs = obj.optLong("warningPeriodMs", Cooldown.DEFAULT_PERIOD_MS),
-            enabled = obj.optBoolean("enabled", true),
-            lastClosedAtMs = closed,
-            sessionAllowed = obj.optBoolean("sessionAllowed", false),
-        )
-    }
+    private fun fromJson(obj: JSONObject): WatchedAppEntity = WatchedAppEntity.fromJson(obj)
 
     companion object {
         private const val PREFS = "miruna_monitor"

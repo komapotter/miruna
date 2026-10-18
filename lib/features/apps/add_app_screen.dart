@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:miruna/domain/cooldown.dart';
 import 'package:miruna/domain/watched_app.dart';
 import 'package:miruna/features/common/app_icon.dart';
 import 'package:miruna/platform/installed_app.dart';
@@ -94,6 +95,7 @@ class _AddAppScreenState extends ConsumerState<AddAppScreen> {
                                       packageName: app.packageName,
                                       displayName: app.label,
                                       warningPeriod: period,
+                                      cooldownPeriod: Cooldown.defaultCooldownPeriod,
                                     ),
                                   );
                               if (context.mounted) {

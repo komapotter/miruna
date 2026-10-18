@@ -133,6 +133,8 @@ class _WatchedAppTile extends ConsumerWidget {
         subtitle: Text(
           [
             '警告期間 ${formatWarningPeriod(app.warningPeriod)}',
+            if (app.cooldownPeriod > Duration.zero)
+              'クールダウン ${formatWarningPeriod(app.cooldownPeriod)}',
             if (!app.enabled) 'オフ',
             if (remaining != null) remainingLabel(remaining),
           ].join(' · '),
