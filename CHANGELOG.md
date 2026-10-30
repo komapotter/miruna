@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2026.1030.0](https://github.com/komapotter/miruna/compare/v2026.1018.0...v2026.1030.0) - 2026-10-30
+
+### Other Changes
+- 「見る」ロック解除に必要なタップ回数を 5〜50 回のランダムにする (#49) by @komapotter in https://github.com/komapotter/miruna/pull/50
+
 ## [v2026.1018.0](https://github.com/komapotter/miruna/compare/v2026.1009.1...v2026.1018.0) - 2026-10-18
 
 ### Other Changes
