@@ -130,6 +130,7 @@ class WarningOverlay(private val context: Context) {
                 gravity = Gravity.END
             }
 
+        // New instance draws a required 「見る」 tap count in 5..50 for this showing.
         val lookGate = LookTapGate()
         val yesButton =
             Button(context).apply {
