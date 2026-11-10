@@ -79,6 +79,12 @@ class MonitorStore(context: Context) {
         }
     }
 
+    fun startUnlockCooldown(packageName: String, nowMs: Long) {
+        update(packageName) { app ->
+            app.copy(unlockedUntilMs = Cooldown.unlockedUntilMs(nowMs, app.cooldownPeriodMs))
+        }
+    }
+
     fun getDefaultWarningPeriodMs(): Long =
         prefs.getLong(KEY_DEFAULT_PERIOD, Cooldown.DEFAULT_PERIOD_MS)
 

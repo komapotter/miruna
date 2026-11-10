@@ -27,6 +27,24 @@ object Cooldown {
     fun unlockedUntilMs(nowMs: Long, cooldownPeriodMs: Long): Long? =
         if (cooldownPeriodMs <= 0L) null else nowMs + cooldownPeriodMs
 
+    fun shouldStartCooldownOnAllow(
+        watched: Boolean,
+        enabled: Boolean,
+        sessionAllowed: Boolean,
+        lastClosedAtMs: Long?,
+        warningPeriodMs: Long,
+        nowMs: Long,
+        unlockedUntilMs: Long?,
+        cooldownPeriodMs: Long,
+    ): Boolean {
+        if (!watched || !enabled) return false
+        if (sessionAllowed) return false
+        if (unlockedUntilMs != null && nowMs < unlockedUntilMs) return false
+        if (cooldownPeriodMs <= 0L) return false
+        if (lastClosedAtMs == null) return true
+        return nowMs - lastClosedAtMs >= warningPeriodMs
+    }
+
     fun shouldRecordClose(unconfirmedWarning: Boolean): Boolean = !unconfirmedWarning
 
     fun formatWarningPeriod(ms: Long): String {

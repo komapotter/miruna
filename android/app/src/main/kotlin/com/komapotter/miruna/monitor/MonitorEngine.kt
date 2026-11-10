@@ -29,6 +29,7 @@ class MonitorEngine private constructor(context: Context) {
         cancelClose(packageName)
 
         val app = store.getApp(packageName) ?: return
+        val nowMs = System.currentTimeMillis()
         val action =
             Cooldown.decide(
                 watched = true,
@@ -36,7 +37,7 @@ class MonitorEngine private constructor(context: Context) {
                 sessionAllowed = app.sessionAllowed,
                 lastClosedAtMs = app.lastClosedAtMs,
                 warningPeriodMs = app.warningPeriodMs,
-                nowMs = System.currentTimeMillis(),
+                nowMs = nowMs,
                 unlockedUntilMs = app.unlockedUntilMs,
             )
         if (action == Cooldown.ACTION_WARN) {
@@ -53,6 +54,20 @@ class MonitorEngine private constructor(context: Context) {
                 )
             }
         } else {
+            if (
+                Cooldown.shouldStartCooldownOnAllow(
+                    watched = true,
+                    enabled = app.enabled,
+                    sessionAllowed = app.sessionAllowed,
+                    lastClosedAtMs = app.lastClosedAtMs,
+                    warningPeriodMs = app.warningPeriodMs,
+                    nowMs = nowMs,
+                    unlockedUntilMs = app.unlockedUntilMs,
+                    cooldownPeriodMs = app.cooldownPeriodMs,
+                )
+            ) {
+                store.startUnlockCooldown(packageName, nowMs)
+            }
             mainHandler.post { overlay.dismiss() }
         }
     }
