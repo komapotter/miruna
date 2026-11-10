@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2026.1110.0](https://github.com/komapotter/miruna/compare/v2026.1030.0...v2026.1110.0) - 2026-11-10
+
+### Other Changes
+- 警告期間が過ぎた後の起動でもクールダウンを開始する by @komapotter in https://github.com/komapotter/miruna/pull/53
+
 ## [v2026.1030.0](https://github.com/komapotter/miruna/compare/v2026.1018.0...v2026.1030.0) - 2026-10-30
 
 ### Other Changes
